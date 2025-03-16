@@ -43,7 +43,6 @@ INSTALLED_APPS = [
     'crispy_forms',
     "crispy_bootstrap4",
     "django_cleanup",
-    "ckeditor",
 ]
 
 MIDDLEWARE = [
@@ -138,13 +137,6 @@ CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap4"
 
 CRISPY_TEMPLATE_PACK = "bootstrap4"
 
-CKEDITOR_CONFIGS = {
-    "default": {
-        "removePlugins": "stylesheetparser",
-        "allowedContent" : True,
-        "width" : "100%",
-    }
-}
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
