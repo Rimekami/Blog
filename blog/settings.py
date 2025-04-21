@@ -144,5 +144,7 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 CKEDITOR_CONFIGS = {
     "default": {
         "removePlugins": "stylesheetparser",
+        "allowedContent": True,
+        "width": "100%",
     }
 }
