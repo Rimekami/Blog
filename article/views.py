@@ -14,6 +14,7 @@ def articles(request):
     articles = Article.objects.all()
 
     return render(request,"articles.html",{"articles":articles})
+
 def index(request):
     return render(request,"index.html")
     
@@ -44,7 +45,8 @@ def detail(request,id):
     article = get_object_or_404(Article,id = id)
 
     comments = article.comments.all()
-    return render(request,"detail.html",{"article":article,"comments":comments})
+    return render(request,"detail.html",{"articlex":article,"comments":comments})
+
 @login_required(login_url = "user:login")
 def updateArticle(request,id):
 
@@ -83,3 +85,36 @@ def addComment(request,id):
 
         newComment.save()
     return redirect(reverse("article:detail",kwargs={"id":id}))
+
+
+
+
+
+from .models import Book
+from .forms import BookForm
+
+def book_list(request):
+    books = Book.objects.all()
+    return render(request, 'book_list.html', {'books': books})
+
+def book_create(request):
+    if request.method == 'POST':
+        form = BookForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('book_list')
+    else:
+        form = BookForm()
+    return render(request, 'book_form.html', {'form': form})
+
+def book_update(request, pk):
+    book = Book.objects.get(pk=pk)
+    if request.method == 'POST':
+        form = BookForm(request.POST, instance=book)
+        if form.is_valid():
+            form.save()
+            return redirect('book_list')
+    else:
+        form = BookForm(instance=book)
+    return render(request, 'book_form.html', {'form': form})
+
