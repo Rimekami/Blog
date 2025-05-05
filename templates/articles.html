@@ -29,4 +29,19 @@
         <div class="col-md-6 mb-4">
             <div class="card h-100 shadow-sm">
                 <div class="card-body">
-                    <h3 class="card-title">{{ article.title }}</h
+                    <h3 class="card-title">{{ article.title }}</h3>
+        {% endfor %}
+                    <p class="card-text">{{ article.content|truncatewords:30 }}</p>
+                    <a href="/article/{{ article.id }}" class="btn btn-primary">Devamını Oku</a>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endif %}
+{% if not articles %}
+    <div class="alert alert-info" role="alert">
+        <h4 class="alert-heading">Henüz hiç makale yok!</h4>
+        <p>İlk makalenizi eklemek için yukarıdaki butona tıklayın.</p>
+    </div>
+{% endif %}
+{% endblock body %}

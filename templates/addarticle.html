@@ -6,7 +6,7 @@
 <div class="row">
     <div class="col-md-8 offset-md-2">
         <div class="content-section">
-            <h3><i class="fas fa-edit"></i> Makale Oluştur</h3>
+            <h3 class="page-title"><i class="fas fa-edit mr-2"></i> Makale Oluştur</h3>
             <hr>
             <form method="post" enctype="multipart/form-data">
                 {% csrf_token %}
@@ -14,9 +14,11 @@
                 
                 {{ form|crispy }}
                 <br>
-                <button type="submit" class="btn btn-danger">
-                    <i class="fas fa-plus-circle"></i> Makale Ekle
-                </button>
+                <div class="text-right">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-plus-circle mr-2"></i> Makale Ekle
+                    </button>
+                </div>
             </form>
         </div>
     </div>
