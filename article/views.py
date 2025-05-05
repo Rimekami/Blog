@@ -45,7 +45,7 @@ def detail(request,id):
     article = get_object_or_404(Article,id = id)
 
     comments = article.comments.all()
-    return render(request,"detail.html",{"articlex":article,"comments":comments})
+    return render(request,"detail.html",{"article":article,"comments":comments})
 
 @login_required(login_url = "user:login")
 def updateArticle(request,id):
