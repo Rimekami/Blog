@@ -1,20 +1,40 @@
 {% extends "layout.html" %}
 
+{% block title %}Ana Sayfa{% endblock title %}
+
 {% block body %}
-
-<div class="jumbotron text-center">
-    <h1>Kitap Kurdu</h1>
-    <p>Hoşgeldiniz, bu sayfa ileride değişecektir</p>
+<div class="row">
+    <div class="col-md-6 offset-md-3">
+        <div class="text-center mb-5">
+            <h1 class="page-title">Kitap Kurdu Blog</h1>
+            <p class="lead text-muted">Kitap dünyasından en güncel yazılar ve bilgiler</p>
+        </div>
+        
+        <div class="jumbotron p-4 p-md-5 text-white rounded" style="background: linear-gradient(to right, var(--primary-color), var(--secondary-color));">
+            <div class="col-md-10 mx-auto">
+                <h2 class="display-4 font-weight-bold">Edebiyat dünyasına hoş geldiniz!</h2>
+                <p class="lead my-3">En güncel kitap yorumları, öneriler ve edebi bilgiler için doğru adrestesiniz.</p>
+                <p class="lead">
+                    <a href="/articles" class="btn btn-lg text-white font-weight-bold" style="background-color: var(--accent-color);">Makalelere Göz At</a>
+                </p>
+            </div>
+        </div>
+        
+        {% if request.user.is_authenticated %}
+        <div class="card shadow-sm mb-4">
+            <div class="card-body text-center">
+                <h3 class="mb-3">Hoş geldin, {{ request.user.username }}!</h3>
+                <div class="d-flex justify-content-center">
+                    <a href="/dashboard" class="btn btn-primary mx-2">
+                        <i class="fas fa-tachometer-alt mr-1"></i> Kontrol Paneli
+                    </a>
+                    <a href="/addarticle" class="btn btn-success mx-2">
+                        <i class="fas fa-plus-circle mr-1"></i> Makale Ekle
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
 </div>
-
-    
-<p>
-    {% if request.user.is_authenticated %}
-            Giriş Yapılmış, {{request.user.username}}
-    {% else %}
-            Giriş Yapılmamış
-    {% endif %}
-
-</p>
-    
-{% endblock %}
+{% endblock body %}

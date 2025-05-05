@@ -2,83 +2,114 @@
 
 {% block body %}
 <div class="row">
-
     <!-- Post Content Column -->
     <div class="col-lg-8">
+      <div class="article-container">
+        <!-- Title -->
+        <h3 class="page-title">{{article.title}}</h3>
 
-      <!-- Title -->
-      <h3 class="mt-4">{{article.title}}</h3>
+        <!-- Author -->
+        <p class="lead">
+          <i class="fas fa-user mr-2"></i> {{article.author.username}} tarafından yayınlandı
+        </p>
 
-      <!-- Author -->
-      <p class="lead">
-        
-        {{article.author.username}} tarafından yayınlandı
-      </p>
+        <hr>
 
-      <hr>
+        <!-- Date/Time -->
+        <p><i class="far fa-clock mr-2"></i> {{article.created_date}}</p>
 
-      <!-- Date/Time -->
-      <p>{{article.created_date}}</p>
+        <hr>
 
-      <hr>
+        <!-- Preview Image -->
+        {% if article.article_image %}
+        <img class="img-fluid rounded" src="{{article.article_image.url}}" alt="{{article.title}}">
+        {% endif %}
+       
+        <hr>
 
-      <!-- Preview Image -->
-      {% if article.article_image %}
-      <img class="img-fluid rounded" src="{{article.article_image.url}}" alt="">
-      {% endif %}
-     
-
-      <hr>
-
-      <!-- Post Content -->
-      <p class="lead">
-          {{article.content|safe}}
-      </p>
-
-      <hr>
-
-      <h4>Yorumlar</h4>
-      <hr>
-      {% if comments %}
-      {% for comment in comments  %}
-        <div class="media mb-4">
-          <img class="d-flex mr-3 rounded-circle" src="http://placehold.it/50x50" alt="">
-          <div class="media-body">
-            <h5 class="mt-0">{{comment.comment_author}}</h5>
-            {{comment.comment_date}} <br>
-            {{comment.comment_content}}
-          </div>
+        <!-- Post Content -->
+        <div class="article-content">
+            {{article.content|safe}}
         </div>
-      {% endfor %}
-      
-      
-      {% else %}
-      <div class ="alert alert-danger">
-        Bu makaleye herhangi bir yorum yazılmamış,ilk yorum yapan siz olun!
       </div>
-      {% endif %}
 
-      <div class="card my-4">
-          <h5 class="card-header">Yorum Ekle:</h5>
-          <div class="card-body">
-            <form method = "post" action = "{% url 'article:comment' article.id %}">
-              {% csrf_token %}
-              <div class="form-group">
-                  <label for="formGroupExampleInput">İsim</label>
-                  <input name = "comment_author" type="text" class="form-control" id="formGroupExampleInput" placeholder="İsminizi girin">
-                </div>
-              <div class="form-group">
-                  <label for="formGroupExampleInput">Yorum</label>
-                <textarea name = "comment_content" class="form-control" rows="3"></textarea>
+      <!-- Comments Section -->
+      <div class="content-section">
+        <h4 class="mb-4"><i class="far fa-comments mr-2"></i> Yorumlar</h4>
+        <hr>
+        {% if comments %}
+          {% for comment in comments %}
+            <div class="media mb-4">
+              <img class="d-flex mr-3 rounded-circle" src="http://placehold.it/50x50" alt="">
+              <div class="media-body">
+                <h5 class="mt-0">{{comment.comment_author}}</h5>
+                <small class="text-muted">{{comment.comment_date}}</small>
+                <p class="mt-2">{{comment.comment_content}}</p>
               </div>
-              <button type="submit" class="btn btn-danger">Ekle</button>
-            </form>
+            </div>
+          {% endfor %}
+        {% else %}
+          <div class="alert alert-danger">
+            <i class="fas fa-info-circle mr-2"></i> Bu makaleye herhangi bir yorum yazılmamış, ilk yorum yapan siz olun!
           </div>
-        </div>
-        </div>
-        
+        {% endif %}
       </div>
 
+      <!-- Comment Form -->
+      <div class="card my-4">
+        <div class="card-header">
+          <i class="fas fa-pen mr-2"></i> Yorum Ekle
+        </div>
+        <div class="card-body">
+          <form method="post" action="{% url 'article:comment' article.id %}">
+            {% csrf_token %}
+            <div class="form-group">
+              <label for="formGroupExampleInput">İsim</label>
+              <input name="comment_author" type="text" class="form-control" id="formGroupExampleInput" placeholder="İsminizi girin">
+            </div>
+            <div class="form-group">
+              <label for="formGroupExampleInput">Yorum</label>
+              <textarea name="comment_content" class="form-control" rows="3" placeholder="Yorumunuzu buraya yazın..."></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary">
+              <i class="fas fa-paper-plane mr-2"></i> Yorum Ekle
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Sidebar Column (for related articles) -->
+    <div class="col-lg-4">
+      <div class="content-section">
+        <h4 class="mb-3">İlgili Yazılar</h4>
+        <div class="list-group">
+          <a href="#" class="list-group-item list-group-item-action">
+            <i class="fas fa-book-open mr-2"></i> Başka Bir Makale
+          </a>
+          <a href="#" class="list-group-item list-group-item-action">
+            <i class="fas fa-book-open mr-2"></i> Önerilebilecek Makale
+          </a>
+          <a href="#" class="list-group-item list-group-item-action">
+            <i class="fas fa-book-open mr-2"></i> Popüler Makale
+          </a>
+        </div>
+      </div>
       
-
+      <div class="content-section">
+        <h4 class="mb-3">Kategoriler</h4>
+        <div class="list-group">
+          <a href="#" class="list-group-item list-group-item-action">
+            <i class="fas fa-tag mr-2"></i> Edebiyat
+          </a>
+          <a href="#" class="list-group-item list-group-item-action">
+            <i class="fas fa-tag mr-2"></i> Bilim Kurgu
+          </a>
+          <a href="#" class="list-group-item list-group-item-action">
+            <i class="fas fa-tag mr-2"></i> Fantastik
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
 {% endblock body %}

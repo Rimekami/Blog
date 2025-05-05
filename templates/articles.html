@@ -1,87 +1,32 @@
 {% extends "layout.html" %}
 
+{% block title %}Makaleler{% endblock title %}
+
 {% block body %}
+<h2 class="page-title"><i class="fas fa-newspaper mr-2"></i>Makaleler</h2>
 
-<div class ="row">
-    
-        <div class="col-md-10 offset-md-3">
-            <div class="col-lg-8">
-                <h3>Makaleler</h3>
-                <hr>
-                </div>
-        </div>
-</div>
-<div class ="row">
-    <div class="col-md-10 offset-md-3">
-        <div class="col-lg-8">
-            <form>
-                 {% csrf_token %} 
-                <input type="text" name = "keyword" class="input-sm" maxlength="64" placeholder="Ara...">
-              <button type="submit" class="btn btn-danger">Ara</button>
-            </form>
-      </div>
+<div class="row mb-4">
+    <div class="col-md-8">
+        <form class="d-flex">
+            <input class="form-control mr-2" type="search" name="keyword" placeholder="Makale ara..." aria-label="Search" {% if request.GET.keyword %} value="{{ request.GET.keyword }}" {% endif %}>
+            <button class="btn btn-primary" type="submit">
+                <i class="fas fa-search mr-1"></i> Ara
+            </button>
+        </form>
     </div>
-
+    {% if request.user.is_authenticated %}
+    <div class="col-md-4 text-md-right">
+        <a href="/addarticle" class="btn btn-success">
+            <i class="fas fa-plus-circle mr-1"></i> Yeni Makale Ekle
+        </a>
+    </div>
+    {% endif %}
 </div>
-
 
 {% if articles %}
-
-{% for article in articles %}
-<div class="row">
-    <div class="col-md-10 offset-md-3">
-
-    <!-- Post Content Column -->
-    <div class="col-lg-8">
-
-      <!-- Title -->
-      <a href="{% url 'article:detail' article.id %}"><h2 class="mt-4">{{article.title}}</h2></a> 
-        
-      <!-- Author -->
-      <p class="lead">
-        
-        {{article.author.username}} tarafından yayınlandı
-      </p>
-
-      <hr>
-
-      <!-- Date/Time -->
-      <p>{{article.created_date}}</p>
-      <hr>
-      <!-- Preview Image -->
-      {% if article.article_image %}
-      <a href="{% url 'article:detail' article.id %}"><img class="img-fluid rounded" src="{{article.article_image.url}}" alt=""></a>
-      {% endif %}
-     
-
-      <hr>
-
-      <!-- Post Content -->
-      <p class="lead">
-          {{article.content|safe|truncatewords:50}}
-      </p>
-
-      <a style ="float : right;" href="{% url 'article:detail' article.id %}" class ="btn btn-danger">Devamını Oku</a>
-      <hr>
-         
-        </div>
-      </div>
-      </div>
-
-{% endfor %}
-
-
-{% else %}
-<div class ="row">
-    
-    <div class="col-md-10 offset-md-3">
-        <div class="col-lg-8">
-<div class = "alert alert-danger">
-   Makale Bulunamadı
-</div>
-</div>
-</div>
-</div>
-{% endif %}
-
-{% endblock body %}
+    <div class="row">
+        {% for article in articles %}
+        <div class="col-md-6 mb-4">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body">
+                    <h3 class="card-title">{{ article.title }}</h
