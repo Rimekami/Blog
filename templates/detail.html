@@ -1,84 +1,783 @@
 {% extends "layout.html" %}
-
 {% block body %}
+
 <div class="row">
-
-    <!-- Post Content Column -->
+    <!-- Main Article Column -->
     <div class="col-lg-8">
-
-      <!-- Title -->
-      <h3 class="mt-4">{{article.title}}</h3>
-
-      <!-- Author -->
-      <p class="lead">
-        
-        {{article.author.username}} tarafından yayınlandı
-      </p>
-
-      <hr>
-
-      <!-- Date/Time -->
-      <p>{{article.created_date}}</p>
-
-      <hr>
-
-      <!-- Preview Image -->
-      {% if article.article_image %}
-      <img class="img-fluid rounded" src="{{article.article_image.url}}" alt="">
-      {% endif %}
-     
-
-      <hr>
-
-      <!-- Post Content -->
-      <p class="lead">
-          {{article.content|safe}}
-      </p>
-
-      <hr>
-
-      <h4>Yorumlar</h4>
-      <hr>
-      {% if comments %}
-      {% for comment in comments  %}
-        <div class="media mb-4">
-          <img class="d-flex mr-3 rounded-circle" src="http://placehold.it/50x50" alt="">
-          <div class="media-body">
-            <h5 class="mt-0">{{comment.comment_author}}</h5>
-            {{comment.comment_date}} <br>
-            {{comment.comment_content}}
-          </div>
-        </div>
-      {% endfor %}
-      
-      
-      {% else %}
-      <div class ="alert alert-danger">
-        Bu makaleye herhangi bir yorum yazılmamış,ilk yorum yapan siz olun!
-      </div>
-      {% endif %}
-
-      <div class="card my-4">
-          <h5 class="card-header">Yorum Ekle:</h5>
-          <div class="card-body">
-            <form method = "post" action = "{% url 'article:comment' article.id %}">
-              {% csrf_token %}
-              <div class="form-group">
-                  <label for="formGroupExampleInput">İsim</label>
-                  <input name = "comment_author" type="text" class="form-control" id="formGroupExampleInput" placeholder="İsminizi girin">
+        <!-- Article Header -->
+        <div class="article-header">
+            <div class="article-meta">
+                <span class="badge badge-primary article-badge">📰 Makale</span>
+                <span class="article-date">
+                    <i class="fas fa-calendar-alt me-1"></i>
+                    {{ article.created_date|date:"d M Y" }}
+                </span>
+            </div>
+            
+            <h1 class="article-title">{{ article.title }}</h1>
+            
+            <div class="author-info">
+                <div class="author-avatar">
+                    <i class="fas fa-user-circle fa-2x text-primary"></i>
                 </div>
-              <div class="form-group">
-                  <label for="formGroupExampleInput">Yorum</label>
-                <textarea name = "comment_content" class="form-control" rows="3"></textarea>
-              </div>
-              <button type="submit" class="btn btn-danger">Ekle</button>
-            </form>
-          </div>
-        </div>
+                <div class="author-details">
+                    <p class="author-name">
+                        <strong>{{ article.author.username }}</strong> tarafından yayınlandı
+                    </p>
+                    <p class="publish-time">
+                        <i class="fas fa-clock me-1"></i>
+                        {{ article.created_date|date:"d F Y, H:i" }}
+                    </p>
+                </div>
+            </div>
         </div>
         
-      </div>
+        <!-- Article Image -->
+        {% if article.article_image %}
+        <div class="article-image-container">
+            <img class="article-image" src="{{ article.article_image.url }}" alt="{{ article.title }}">
+            <div class="image-overlay">
+                <i class="fas fa-expand-alt"></i>
+            </div>
+        </div>
+        {% endif %}
+        
+        <!-- Article Content -->
+        <div class="article-content">
+            <div class="content-body">
+                {{ article.content|safe }}
+            </div>
+        </div>
+        
+        <!-- Article Actions -->
+        <div class="article-actions">
+            <div class="action-buttons">
+                <button class="btn btn-outline-primary btn-sm">
+                    <i class="fas fa-thumbs-up me-1"></i>Beğen
+                </button>
+                <button class="btn btn-outline-secondary btn-sm">
+                    <i class="fas fa-share me-1"></i>Paylaş
+                </button>
+                <button class="btn btn-outline-info btn-sm">
+                    <i class="fas fa-bookmark me-1"></i>Kaydet
+                </button>
+            </div>
+        </div>
+        
+        <!-- Comments Section -->
+        <div class="comments-section">
+            <div class="comments-header">
+                <h4 class="comments-title">
+                    <i class="fas fa-comments me-2"></i>
+                    Yorumlar 
+                    <span class="comment-count">({{ comments|length }})</span>
+                </h4>
+            </div>
+            
+            <!-- Comments List -->
+            <div class="comments-list">
+                {% if comments %}
+                    {% for comment in comments %}
+                        <div class="comment-item">
+                            <div class="comment-avatar">
+                                <div class="avatar-circle">
+                                    {{ comment.comment_author|first|upper }}
+                                </div>
+                            </div>
+                            <div class="comment-content">
+                                <div class="comment-header">
+                                    <h6 class="comment-author">{{ comment.comment_author }}</h6>
+                                    <span class="comment-time">
+                                        <i class="fas fa-clock me-1"></i>
+                                        {{ comment.comment_date|date:"d M Y, H:i" }}
+                                    </span>
+                                </div>
+                                <p class="comment-text">{{ comment.comment_content }}</p>
+                                
+                                <div class="comment-actions">
+                                    <button class="btn btn-link btn-sm text-muted">
+                                        <i class="fas fa-thumbs-up me-1"></i>Beğen
+                                    </button>
+                                    <button class="btn btn-link btn-sm text-muted">
+                                        <i class="fas fa-reply me-1"></i>Yanıtla
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="no-comments">
+                        <div class="no-comments-icon">
+                            <i class="fas fa-comment-dots fa-3x text-muted"></i>
+                        </div>
+                        <h5 class="no-comments-title">Henüz yorum yok</h5>
+                        <p class="no-comments-text">
+                            Bu makaleye henüz herhangi bir yorum yazılmamış. 
+                            İlk yorum yapan siz olun!
+                        </p>
+                    </div>
+                {% endif %}
+            </div>
+            
+            <!-- Add Comment Form -->
+            <div class="add-comment-section">
+                <div class="comment-form-header">
+                    <h5 class="form-title">
+                        <i class="fas fa-pen me-2"></i>Yorum Ekle
+                    </h5>
+                </div>
+                
+                <form method="post" action="{% url 'article:comment' article.id %}" class="comment-form">
+                    {% csrf_token %}
+                    
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label for="comment_author" class="form-label">
+                                <i class="fas fa-user me-1"></i>İsminiz
+                            </label>
+                            <input name="comment_author" 
+                                   type="text" 
+                                   class="form-control" 
+                                   id="comment_author" 
+                                   placeholder="İsminizi girin"
+                                   required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="comment_content" class="form-label">
+                            <i class="fas fa-comment me-1"></i>Yorumunuz
+                        </label>
+                        <textarea name="comment_content" 
+                                  class="form-control" 
+                                  id="comment_content"
+                                  rows="4" 
+                                  placeholder="Düşüncelerinizi paylaşın..."
+                                  required></textarea>
+                        <small class="form-text text-muted">
+                            Lütfen saygılı ve yapıcı yorumlar yazın.
+                        </small>
+                    </div>
+                    
+                    <div class="form-submit">
+                        <button type="submit" class="btn btn-primary btn-lg">
+                            <i class="fas fa-paper-plane me-2"></i>
+                            Yorumu Gönder
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Sidebar -->
+    <div class="col-lg-4">
+        <div class="sidebar">
+            <!-- Article Info Card -->
+            <div class="sidebar-card">
+                <h5 class="sidebar-title">📊 Makale Bilgileri</h5>
+                <div class="article-stats">
+                    <div class="stat-item">
+                        <i class="fas fa-eye text-primary"></i>
+                        <span>1,234 görüntülenme</span>
+                    </div>
+                    <div class="stat-item">
+                        <i class="fas fa-comments text-success"></i>
+                        <span>{{ comments|length }} yorum</span>
+                    </div>
+                    <div class="stat-item">
+                        <i class="fas fa-heart text-danger"></i>
+                        <span>89 beğeni</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Author Card -->
+            <div class="sidebar-card">
+                <h5 class="sidebar-title">✍️ Yazar Hakkında</h5>
+                <div class="author-card">
+                    <div class="author-avatar-large">
+                        <i class="fas fa-user-circle fa-4x text-primary"></i>
+                    </div>
+                    <h6 class="author-name">{{ article.author.username }}</h6>
+                    <p class="author-bio">
+                        Kitap tutkunu bir yazar. Okuma deneyimlerini 
+                        ve kitap incelemelerini paylaşmayı seviyor.
+                    </p>
+                    <div class="author-stats">
+                        <div class="stat">
+                            <strong>15</strong>
+                            <small>Makale</small>
+                        </div>
+                        <div class="stat">
+                            <strong>234</strong>
+                            <small>Takipçi</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Related Articles -->
+            <div class="sidebar-card">
+                <h5 class="sidebar-title">📚 İlgili Makaleler</h5>
+                <div class="related-articles">
+                    <div class="related-item">
+                        <div class="related-image">
+                            <i class="fas fa-book"></i>
+                        </div>
+                        <div class="related-content">
+                            <h6 class="related-title">En İyi Fantastik Romanlar</h6>
+                            <small class="related-date">2 gün önce</small>
+                        </div>
+                    </div>
+                    <div class="related-item">
+                        <div class="related-image">
+                            <i class="fas fa-book"></i>
+                        </div>
+                        <div class="related-content">
+                            <h6 class="related-title">Okuma Alışkanlığı Nasıl Geliştirilir?</h6>
+                            <small class="related-date">1 hafta önce</small>
+                        </div>
+                    </div>
+                    <div class="related-item">
+                        <div class="related-image">
+                            <i class="fas fa-book"></i>
+                        </div>
+                        <div class="related-content">
+                            <h6 class="related-title">2024'ün En Popüler Kitapları</h6>
+                            <small class="related-date">2 hafta önce</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
-      
+<style>
+    /* Article Header */
+    .article-header {
+        background: rgba(255, 255, 255, 0.9);
+        border-radius: 15px;
+        padding: 2rem;
+        margin-bottom: 2rem;
+        backdrop-filter: blur(10px);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        animation: fadeInUp 0.6s ease;
+    }
+    
+    .article-meta {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1rem;
+    }
+    
+    .article-badge {
+        font-size: 0.875rem;
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+    }
+    
+    .article-date {
+        color: #718096;
+        font-size: 0.9rem;
+    }
+    
+    .article-title {
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: #2d3748;
+        margin-bottom: 1.5rem;
+        line-height: 1.2;
+        background: linear-gradient(135deg, #667eea, #48bb78);
+        background-clip: text;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+    
+    .author-info {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+    
+    .author-avatar {
+        flex-shrink: 0;
+    }
+    
+    .author-details p {
+        margin-bottom: 0.25rem;
+    }
+    
+    .author-name {
+        color: #2d3748;
+        font-size: 1.1rem;
+    }
+    
+    .publish-time {
+        color: #718096;
+        font-size: 0.9rem;
+    }
+    
+    /* Article Image */
+    .article-image-container {
+        position: relative;
+        margin-bottom: 2rem;
+        border-radius: 15px;
+        overflow: hidden;
+        animation: fadeInUp 0.6s ease 0.2s both;
+    }
+    
+    .article-image {
+        width: 100%;
+        height: auto;
+        display: block;
+        transition: transform 0.3s ease;
+    }
+    
+    .image-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.3);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+        cursor: pointer;
+    }
+    
+    .image-overlay i {
+        color: white;
+        font-size: 2rem;
+    }
+    
+    .article-image-container:hover .article-image {
+        transform: scale(1.05);
+    }
+    
+    .article-image-container:hover .image-overlay {
+        opacity: 1;
+    }
+    
+    /* Article Content */
+    .article-content {
+        background: rgba(255, 255, 255, 0.9);
+        border-radius: 15px;
+        padding: 2rem;
+        margin-bottom: 2rem;
+        backdrop-filter: blur(10px);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        animation: fadeInUp 0.6s ease 0.4s both;
+    }
+    
+    .content-body {
+        font-size: 1.1rem;
+        line-height: 1.7;
+        color: #4a5568;
+    }
+    
+    .content-body p {
+        margin-bottom: 1.5rem;
+    }
+    
+    .content-body h1, .content-body h2, .content-body h3 {
+        color: #2d3748;
+        margin-top: 2rem;
+        margin-bottom: 1rem;
+    }
+    
+    /* Article Actions */
+    .article-actions {
+        background: rgba(255, 255, 255, 0.9);
+        border-radius: 15px;
+        padding: 1.5rem;
+        margin-bottom: 2rem;
+        backdrop-filter: blur(10px);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        animation: fadeInUp 0.6s ease 0.6s both;
+    }
+    
+    .action-buttons {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+    }
+    
+    .action-buttons .btn {
+        border-radius: 20px;
+        padding: 0.5rem 1.5rem;
+        transition: all 0.3s ease;
+    }
+    
+    .action-buttons .btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    }
+    
+    /* Comments Section */
+    .comments-section {
+        background: rgba(255, 255, 255, 0.9);
+        border-radius: 15px;
+        padding: 2rem;
+        backdrop-filter: blur(10px);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        animation: fadeInUp 0.6s ease 0.8s both;
+    }
+    
+    .comments-header {
+        border-bottom: 2px solid #e2e8f0;
+        padding-bottom: 1rem;
+        margin-bottom: 2rem;
+    }
+    
+    .comments-title {
+        color: #2d3748;
+        font-weight: 600;
+        margin-bottom: 0;
+    }
+    
+    .comment-count {
+        color: #718096;
+        font-weight: normal;
+        font-size: 1rem;
+    }
+    
+    /* Comment Items */
+    .comment-item {
+        display: flex;
+        gap: 1rem;
+        margin-bottom: 2rem;
+        padding-bottom: 2rem;
+        border-bottom: 1px solid #e2e8f0;
+    }
+    
+    .comment-item:last-child {
+        border-bottom: none;
+        margin-bottom: 0;
+        padding-bottom: 0;
+    }
+    
+    .comment-avatar {
+        flex-shrink: 0;
+    }
+    
+    .avatar-circle {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #667eea, #48bb78);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-weight: bold;
+        font-size: 1.2rem;
+    }
+    
+    .comment-content {
+        flex: 1;
+    }
+    
+    .comment-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 0.5rem;
+    }
+    
+    .comment-author {
+        color: #2d3748;
+        font-weight: 600;
+        margin-bottom: 0;
+    }
+    
+    .comment-time {
+        color: #718096;
+        font-size: 0.875rem;
+    }
+    
+    .comment-text {
+        color: #4a5568;
+        line-height: 1.6;
+        margin-bottom: 1rem;
+    }
+    
+    .comment-actions {
+        display: flex;
+        gap: 1rem;
+    }
+    
+    .comment-actions .btn {
+        padding: 0.25rem 0.5rem;
+        font-size: 0.875rem;
+    }
+    
+    /* No Comments */
+    .no-comments {
+        text-align: center;
+        padding: 3rem 1rem;
+    }
+    
+    .no-comments-icon {
+        margin-bottom: 1rem;
+    }
+    
+    .no-comments-title {
+        color: #2d3748;
+        margin-bottom: 1rem;
+    }
+    
+    .no-comments-text {
+        color: #718096;
+        max-width: 400px;
+        margin: 0 auto;
+    }
+    
+    /* Comment Form */
+    .add-comment-section {
+        border-top: 2px solid #e2e8f0;
+        padding-top: 2rem;
+        margin-top: 2rem;
+    }
+    
+    .comment-form-header {
+        margin-bottom: 1.5rem;
+    }
+    
+    .form-title {
+        color: #2d3748;
+        font-weight: 600;
+        margin-bottom: 0;
+    }
+    
+    .comment-form .form-label {
+        font-weight: 600;
+        color: #2d3748;
+        margin-bottom: 0.5rem;
+    }
+    
+    .comment-form .form-control {
+        border: 2px solid #e2e8f0;
+        border-radius: 10px;
+        padding: 0.75rem 1rem;
+        transition: all 0.3s ease;
+    }
+    
+    .comment-form .form-control:focus {
+        border-color: #667eea;
+        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+    
+    .form-submit {
+        text-align: center;
+        margin-top: 1.5rem;
+    }
+    
+    .form-submit .btn {
+        padding: 0.75rem 2rem;
+        border-radius: 25px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+    
+    .form-submit .btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+    }
+    
+    /* Sidebar */
+    .sidebar {
+        position: sticky;
+        top: 120px;
+    }
+    
+    .sidebar-card {
+        background: rgba(255, 255, 255, 0.9);
+        border-radius: 15px;
+        padding: 1.5rem;
+        margin-bottom: 2rem;
+        backdrop-filter: blur(10px);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        animation: fadeInUp 0.6s ease 1s both;
+    }
+    
+    .sidebar-title {
+        color: #2d3748;
+        font-weight: 600;
+        margin-bottom: 1rem;
+        border-bottom: 2px solid #e2e8f0;
+        padding-bottom: 0.5rem;
+    }
+    
+    /* Article Stats */
+    .article-stats {
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+    
+    .stat-item {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        color: #4a5568;
+    }
+    
+    /* Author Card */
+    .author-card {
+        text-align: center;
+    }
+    
+    .author-avatar-large {
+        margin-bottom: 1rem;
+    }
+    
+    .author-card .author-name {
+        color: #2d3748;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+    }
+    
+    .author-bio {
+        color: #718096;
+        font-size: 0.9rem;
+        margin-bottom: 1rem;
+    }
+    
+    .author-stats {
+        display: flex;
+        justify-content: space-around;
+        border-top: 1px solid #e2e8f0;
+        padding-top: 1rem;
+    }
+    
+    .stat {
+        text-align: center;
+    }
+    
+    .stat strong {
+        display: block;
+        color: #2d3748;
+        font-size: 1.2rem;
+    }
+    
+    .stat small {
+        color: #718096;
+    }
+    
+    /* Related Articles */
+    .related-articles {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+    }
+    
+    .related-item {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        padding: 0.75rem;
+        border-radius: 10px;
+        transition: all 0.3s ease;
+        cursor: pointer;
+    }
+    
+    .related-item:hover {
+        background: rgba(102, 126, 234, 0.05);
+        transform: translateX(5px);
+    }
+    
+    .related-image {
+        width: 40px;
+        height: 40px;
+        border-radius: 8px;
+        background: linear-gradient(135deg, #667eea, #48bb78);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        flex-shrink: 0;
+    }
+    
+    .related-content {
+        flex: 1;
+    }
+    
+    .related-title {
+        color: #2d3748;
+        font-size: 0.9rem;
+        font-weight: 500;
+        margin-bottom: 0.25rem;
+        line-height: 1.3;
+    }
+    
+    .related-date {
+        color: #718096;
+        font-size: 0.8rem;
+    }
+    
+    /* Animations */
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    /* Responsive */
+    @media (max-width: 992px) {
+        .sidebar {
+            position: static;
+            margin-top: 2rem;
+        }
+    }
+    
+    @media (max-width: 768px) {
+        .article-title {
+            font-size: 2rem;
+        }
+        
+        .article-header,
+        .article-content,
+        .comments-section {
+            padding: 1.5rem;
+        }
+        
+        .author-info {
+            flex-direction: column;
+            text-align: center;
+            gap: 0.5rem;
+        }
+        
+        .action-buttons {
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .action-buttons .btn {
+            width: 100%;
+            max-width: 200px;
+        }
+        
+        .comment-header {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 0.25rem;
+        }
+        
+        .author-stats {
+            justify-content: space-between;
+        }
+    }
+</style>
 
 {% endblock body %}
