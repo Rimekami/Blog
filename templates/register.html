@@ -1,22 +1,445 @@
 {% extends "layout.html" %}
-
 {% block body %}
-
 {% load crispy_forms_tags %}
 
-<div class="row">
-    <div class="col-md-6 offset-md-3">
-        <h3>Kayıt Ol</h3>
-        <hr>
-        <form method = "post">
-            {% csrf_token %}
+<div class="row justify-content-center">
+    <div class="col-lg-6 col-md-8 col-sm-10">
+        <!-- Register Card -->
+        <div class="card register-card shadow-lg">
+            <div class="card-body p-5">
+                <!-- Header Section -->
+                <div class="text-center mb-4">
+                    <div class="register-icon mb-3">
+                        <i class="fas fa-user-plus fa-4x text-success"></i>
+                    </div>
+                    <h2 class="card-title font-weight-bold text-dark mb-2">Hesap Oluşturun</h2>
+                    <p class="text-muted">Kitap dünyasına katılın ve okuma serüveninizi başlatın</p>
+                </div>
+                
+                <!-- Register Form -->
+                <form method="post" class="register-form">
+                    {% csrf_token %}
+                    
+                    <div class="form-group-enhanced">
+                        {{ form|crispy }}
+                    </div>
+                    
+                    <!-- Terms and Conditions -->
+                    <div class="form-check mb-4">
+                        <input class="form-check-input" type="checkbox" id="terms" required>
+                        <label class="form-check-label text-muted small" for="terms">
+                            <a href="#" class="text-primary">Kullanım Koşulları</a>'nı ve 
+                            <a href="#" class="text-primary">Gizlilik Politikası</a>'nı okudum ve kabul ediyorum.
+                        </label>
+                    </div>
+                    
+                    <!-- Submit Button -->
+                    <div class="d-grid gap-2 mt-4">
+                        <button type="submit" class="btn btn-success btn-lg btn-register">
+                            <i class="fas fa-rocket me-2"></i>
+                            Hesabımı Oluştur
+                        </button>
+                    </div>
+                </form>
+                
+                <!-- Footer Links -->
+                <div class="text-center mt-4">
+                    <div class="register-divider">
+                        <span class="px-3 bg-white text-muted small">veya</span>
+                    </div>
+                    
+                    <div class="mt-3">
+                        <p class="text-muted mb-2">Zaten hesabınız var mı?</p>
+                        <a href="{% url 'user:login' %}" class="btn btn-outline-primary btn-login-link">
+                            <i class="fas fa-sign-in-alt me-2"></i>
+                            Giriş Yap
+                        </a>
+                    </div>
+                </div>
+            </div>
             
-            {{form|crispy}}
-            <br>
-            <button type = "submit" class = "btn btn-danger">Giriş Yap</button>
-        </form>
+            <!-- Card Footer -->
+            <div class="card-footer bg-transparent text-center py-3">
+                <small class="text-muted">
+                    <i class="fas fa-shield-alt me-1"></i>
+                    Kişisel bilgileriniz güvenli şekilde korunmaktadır
+                </small>
+            </div>
+        </div>
+        
+        <!-- Features Preview -->
+        <div class="features-preview mt-4">
+            <div class="row text-center">
+                <div class="col-4">
+                    <div class="feature-item">
+                        <i class="fas fa-books fa-2x text-primary mb-2"></i>
+                        <h6 class="small font-weight-bold">Kitap Takibi</h6>
+                        <p class="small text-muted">Okuduğunuz kitapları takip edin</p>
+                    </div>
+                </div>
+                <div class="col-4">
+                    <div class="feature-item">
+                        <i class="fas fa-chart-line fa-2x text-success mb-2"></i>
+                        <h6 class="small font-weight-bold">İstatistikler</h6>
+                        <p class="small text-muted">Okuma hedeflerinizi görün</p>
+                    </div>
+                </div>
+                <div class="col-4">
+                    <div class="feature-item">
+                        <i class="fas fa-star fa-2x text-warning mb-2"></i>
+                        <h6 class="small font-weight-bold">Değerlendirme</h6>
+                        <p class="small text-muted">Kitaplara puan verin</p>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-  </div>
+</div>
+
+<!-- Custom Styles -->
+<style>
+    .register-card {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 20px;
+        transition: all 0.3s ease;
+        animation: slideInUp 0.6s ease;
+    }
+    
+    .register-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1) !important;
+    }
+    
+    .register-icon {
+        animation: bounceIn 0.8s ease;
+    }
+    
+    .register-icon i {
+        background: linear-gradient(135deg, #48bb78, #38a169);
+        background-clip: text;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        filter: drop-shadow(0 4px 6px rgba(72, 187, 120, 0.3));
+    }
+    
+    .form-group-enhanced .form-control {
+        background: rgba(255, 255, 255, 0.8);
+        border: 2px solid #e2e8f0;
+        border-radius: 12px;
+        padding: 12px 16px;
+        font-size: 16px;
+        transition: all 0.3s ease;
+    }
+    
+    .form-group-enhanced .form-control:focus {
+        border-color: #48bb78;
+        box-shadow: 0 0 0 4px rgba(72, 187, 120, 0.1);
+        background: white;
+        transform: translateY(-1px);
+    }
+    
+    .form-group-enhanced label {
+        font-weight: 600;
+        color: var(--dark-text);
+        margin-bottom: 8px;
+        font-size: 14px;
+    }
+    
+    .form-check-input:checked {
+        background-color: #48bb78;
+        border-color: #48bb78;
+    }
+    
+    .form-check-input:focus {
+        border-color: #48bb78;
+        box-shadow: 0 0 0 0.2rem rgba(72, 187, 120, 0.25);
+    }
+    
+    .btn-register {
+        background: linear-gradient(135deg, #48bb78, #38a169);
+        border: none;
+        border-radius: 12px;
+        padding: 12px 20px;
+        font-weight: 600;
+        font-size: 16px;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .btn-register::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+        transition: left 0.5s ease;
+    }
+    
+    .btn-register:hover::before {
+        left: 100%;
+    }
+    
+    .btn-register:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 30px rgba(72, 187, 120, 0.4);
+    }
+    
+    .btn-login-link {
+        border: 2px solid var(--primary-color);
+        color: var(--primary-color);
+        border-radius: 12px;
+        padding: 8px 20px;
+        font-weight: 500;
+        transition: all 0.3s ease;
+    }
+    
+    .btn-login-link:hover {
+        background: var(--primary-color);
+        color: white;
+        transform: translateY(-1px);
+        box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+    }
+    
+    .register-divider {
+        position: relative;
+        margin: 20px 0;
+    }
+    
+    .register-divider::before {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 0;
+        right: 0;
+        height: 1px;
+        background: linear-gradient(90deg, transparent, #e2e8f0, transparent);
+    }
+    
+    .features-preview {
+        animation: fadeInUp 0.8s ease 0.3s both;
+    }
+    
+    .feature-item {
+        padding: 1rem;
+        background: rgba(255, 255, 255, 0.7);
+        border-radius: 12px;
+        transition: all 0.3s ease;
+        margin-bottom: 1rem;
+    }
+    
+    .feature-item:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        background: rgba(255, 255, 255, 0.9);
+    }
+    
+    .feature-item i {
+        transition: all 0.3s ease;
+    }
+    
+    .feature-item:hover i {
+        transform: scale(1.1);
+    }
+    
+    /* Password strength indicator */
+    .password-strength {
+        height: 4px;
+        background: #e2e8f0;
+        border-radius: 2px;
+        margin-top: 5px;
+        overflow: hidden;
+    }
+    
+    .password-strength .strength-bar {
+        height: 100%;
+        width: 0;
+        border-radius: 2px;
+        transition: all 0.3s ease;
+    }
+    
+    .strength-weak { background: #ef4444; }
+    .strength-medium { background: #f59e0b; }
+    .strength-strong { background: #10b981; }
+    
+    /* Animations */
+    @keyframes slideInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    @keyframes bounceIn {
+        0% {
+            opacity: 0;
+            transform: scale(0.3);
+        }
+        50% {
+            opacity: 1;
+            transform: scale(1.05);
+        }
+        70% {
+            transform: scale(0.9);
+        }
+        100% {
+            opacity: 1;
+            transform: scale(1);
+        }
+    }
+    
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    /* Responsive */
+    @media (max-width: 576px) {
+        .card-body {
+            padding: 2rem !important;
+        }
+        
+        .register-icon i {
+            font-size: 3rem !important;
+        }
+        
+        .features-preview {
+            margin-top: 2rem;
+        }
+        
+        .feature-item {
+            margin-bottom: 0.5rem;
+        }
+    }
+    
+    /* Loading state */
+    .btn-register.loading {
+        pointer-events: none;
+    }
+    
+    .btn-register.loading::after {
+        content: '';
+        position: absolute;
+        width: 16px;
+        height: 16px;
+        margin: auto;
+        border: 2px solid transparent;
+        border-top-color: #ffffff;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        right: 0;
+    }
+    
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+</style>
+
+<!-- Enhanced JavaScript -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const registerForm = document.querySelector('.register-form');
+    const submitBtn = document.querySelector('.btn-register');
+    const originalBtnText = submitBtn.innerHTML;
+    
+    // Form submission enhancement
+    registerForm.addEventListener('submit', function(e) {
+        const termsCheckbox = document.getElementById('terms');
+        if (!termsCheckbox.checked) {
+            e.preventDefault();
+            alert('Lütfen kullanım koşullarını kabul edin.');
+            return;
+        }
+        
+        submitBtn.classList.add('loading');
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Hesap oluşturuluyor...';
+        submitBtn.disabled = true;
+        
+        // Fallback to re-enable button
+        setTimeout(function() {
+            submitBtn.classList.remove('loading');
+            submitBtn.innerHTML = originalBtnText;
+            submitBtn.disabled = false;
+        }, 5000);
+    });
+    
+    // Input field animations
+    const inputs = document.querySelectorAll('.form-control');
+    inputs.forEach(input => {
+        input.addEventListener('focus', function() {
+            this.parentElement.classList.add('focused');
+        });
+        
+        input.addEventListener('blur', function() {
+            if (!this.value) {
+                this.parentElement.classList.remove('focused');
+            }
+        });
+        
+        // Check if input has value on load
+        if (input.value) {
+            input.parentElement.classList.add('focused');
+        }
+    });
+    
+    // Password strength indicator
+    const passwordField = document.querySelector('input[type="password"]');
+    if (passwordField) {
+        const strengthIndicator = document.createElement('div');
+        strengthIndicator.className = 'password-strength';
+        strengthIndicator.innerHTML = '<div class="strength-bar"></div>';
+        passwordField.parentElement.appendChild(strengthIndicator);
+        
+        passwordField.addEventListener('input', function() {
+            const password = this.value;
+            const strengthBar = strengthIndicator.querySelector('.strength-bar');
+            let strength = 0;
+            
+            if (password.length >= 8) strength++;
+            if (/[a-z]/.test(password)) strength++;
+            if (/[A-Z]/.test(password)) strength++;
+            if (/[0-9]/.test(password)) strength++;
+            if (/[^A-Za-z0-9]/.test(password)) strength++;
+            
+            const percentage = (strength / 5) * 100;
+            strengthBar.style.width = percentage + '%';
+            
+            strengthBar.className = 'strength-bar';
+            if (percentage < 40) {
+                strengthBar.classList.add('strength-weak');
+            } else if (percentage < 80) {
+                strengthBar.classList.add('strength-medium');
+            } else {
+                strengthBar.classList.add('strength-strong');
+            }
+        });
+    }
+    
+    // Feature items staggered animation
+    const featureItems = document.querySelectorAll('.feature-item');
+    featureItems.forEach((item, index) => {
+        item.style.animationDelay = (index * 0.1) + 's';
+        item.style.animation = 'fadeInUp 0.6s ease both';
+    });
+});
+</script>
 
 {% endblock body %}
-
