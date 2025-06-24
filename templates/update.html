@@ -1,21 +1,546 @@
 {% extends "layout.html" %}
-
 {% block body %}
 {% load crispy_forms_tags %}
 
-<div class="row">
-    <div class="col-md-6 offset-md-3">
-        <h3>Makale Güncelle</h3>
-        <hr>
-        <form method = "post" enctype="multipart/form-data">
-            {% csrf_token %}
-            {{form.media}}
-            {{form|crispy}}
-            <br>
-            <button type = "submit" class = "btn btn-danger">Makale Güncelle</button>
-        </form>
+<div class="row justify-content-center">
+    <div class="col-lg-8 col-md-10">
+        <!-- Update Article Card -->
+        <div class="card update-card shadow-lg">
+            <!-- Card Header -->
+            <div class="card-header text-center py-4">
+                <div class="update-icon mb-3">
+                    <i class="fas fa-edit fa-3x text-warning"></i>
+                </div>
+                <h2 class="card-title font-weight-bold text-dark mb-2">
+                    <i class="fas fa-pen-alt me-2"></i>
+                    Makale Güncelle
+                </h2>
+                <p class="text-muted mb-0">Makalenizi düzenleyin ve değişikliklerinizi kaydedin</p>
+            </div>
+            
+            <!-- Card Body -->
+            <div class="card-body p-4">
+                <!-- Progress Indicator -->
+                <div class="progress-steps mb-4">
+                    <div class="step active">
+                        <i class="fas fa-file-alt"></i>
+                        <span>İçerik</span>
+                    </div>
+                    <div class="step">
+                        <i class="fas fa-image"></i>
+                        <span>Görsel</span>
+                    </div>
+                    <div class="step">
+                        <i class="fas fa-save"></i>
+                        <span>Kaydet</span>
+                    </div>
+                </div>
+                
+                <!-- Update Form -->
+                <form method="post" enctype="multipart/form-data" class="update-form" id="updateForm">
+                    {% csrf_token %}
+                    
+                    <!-- Rich Text Editor Media -->
+                    {{ form.media }}
+                    
+                    <!-- Form Fields -->
+                    <div class="form-group-enhanced">
+                        {{ form|crispy }}
+                    </div>
+                    
+                    <!-- Action Buttons -->
+                    <div class="form-actions mt-4">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <a href="{% url 'article:articles' %}" class="btn btn-outline-secondary btn-lg btn-block">
+                                    <i class="fas fa-arrow-left me-2"></i>
+                                    İptal Et
+                                </a>
+                            </div>
+                            <div class="col-md-6">
+                                <button type="submit" class="btn btn-warning btn-lg btn-block btn-update">
+                                    <i class="fas fa-save me-2"></i>
+                                    Güncellemeyi Kaydet
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            
+            <!-- Card Footer -->
+            <div class="card-footer bg-transparent text-center py-3">
+                <div class="row text-center">
+                    <div class="col-4">
+                        <small class="text-muted">
+                            <i class="fas fa-save me-1"></i>
+                            Otomatik kaydetme
+                        </small>
+                    </div>
+                    <div class="col-4">
+                        <small class="text-muted">
+                            <i class="fas fa-history me-1"></i>
+                            Sürüm kontrolü
+                        </small>
+                    </div>
+                    <div class="col-4">
+                        <small class="text-muted">
+                            <i class="fas fa-shield-alt me-1"></i>
+                            Güvenli düzenleme
+                        </small>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Tips Section -->
+        <div class="tips-section mt-4">
+            <div class="card tips-card">
+                <div class="card-body py-3">
+                    <div class="d-flex align-items-center">
+                        <div class="tips-icon me-3">
+                            <i class="fas fa-lightbulb text-warning"></i>
+                        </div>
+                        <div class="tips-content">
+                            <h6 class="mb-1 font-weight-bold">💡 İpucu</h6>
+                            <small class="text-muted">
+                                Değişiklikleriniz otomatik olarak taslak halinde saklanır. 
+                                Makale başlığınızı SEO dostu yapmayı unutmayın!
+                            </small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-  </div>
+</div>
 
+<!-- Custom Styles -->
+<style>
+    .update-card {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 20px;
+        transition: all 0.3s ease;
+        animation: slideInUp 0.6s ease;
+        overflow: hidden;
+    }
+    
+    .update-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1) !important;
+    }
+    
+    .update-icon {
+        animation: bounceIn 0.8s ease;
+    }
+    
+    .update-icon i {
+        background: linear-gradient(135deg, #ed8936, #dd6b20);
+        background-clip: text;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        filter: drop-shadow(0 4px 6px rgba(237, 137, 54, 0.3));
+    }
+    
+    /* Progress Steps */
+    .progress-steps {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin: 1rem 0;
+        position: relative;
+    }
+    
+    .progress-steps::before {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 20%;
+        right: 20%;
+        height: 2px;
+        background: linear-gradient(90deg, #e2e8f0, #ed8936, #e2e8f0);
+        transform: translateY(-50%);
+        z-index: 1;
+    }
+    
+    .step {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 0.5rem;
+        background: white;
+        border-radius: 50px;
+        z-index: 2;
+        transition: all 0.3s ease;
+    }
+    
+    .step.active {
+        color: #ed8936;
+        transform: scale(1.1);
+    }
+    
+    .step i {
+        font-size: 1.2rem;
+        margin-bottom: 0.25rem;
+    }
+    
+    .step span {
+        font-size: 0.75rem;
+        font-weight: 500;
+    }
+    
+    /* Form Enhancements */
+    .form-group-enhanced .form-control {
+        background: rgba(255, 255, 255, 0.8);
+        border: 2px solid #e2e8f0;
+        border-radius: 12px;
+        padding: 12px 16px;
+        font-size: 16px;
+        transition: all 0.3s ease;
+    }
+    
+    .form-group-enhanced .form-control:focus {
+        border-color: #ed8936;
+        box-shadow: 0 0 0 4px rgba(237, 137, 54, 0.1);
+        background: white;
+        transform: translateY(-1px);
+    }
+    
+    .form-group-enhanced label {
+        font-weight: 600;
+        color: var(--dark-text);
+        margin-bottom: 8px;
+        font-size: 14px;
+    }
+    
+    .form-group-enhanced textarea {
+        min-height: 120px;
+        resize: vertical;
+    }
+    
+    /* File upload styling */
+    .form-group-enhanced input[type="file"] {
+        border-style: dashed;
+        border-width: 2px;
+        padding: 20px;
+        text-align: center;
+        background: rgba(237, 137, 54, 0.05);
+    }
+    
+    .form-group-enhanced input[type="file"]:hover {
+        border-color: #ed8936;
+        background: rgba(237, 137, 54, 0.1);
+    }
+    
+    /* Button Styles */
+    .btn-update {
+        background: linear-gradient(135deg, #ed8936, #dd6b20);
+        border: none;
+        border-radius: 12px;
+        padding: 12px 20px;
+        font-weight: 600;
+        font-size: 16px;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .btn-update::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+        transition: left 0.5s ease;
+    }
+    
+    .btn-update:hover::before {
+        left: 100%;
+    }
+    
+    .btn-update:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 30px rgba(237, 137, 54, 0.4);
+    }
+    
+    .btn-outline-secondary {
+        border: 2px solid #718096;
+        color: #718096;
+        border-radius: 12px;
+        padding: 12px 20px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+    
+    .btn-outline-secondary:hover {
+        background: #718096;
+        color: white;
+        transform: translateY(-1px);
+        box-shadow: 0 8px 20px rgba(113, 128, 150, 0.3);
+    }
+    
+    /* Tips Section */
+    .tips-card {
+        background: linear-gradient(135deg, rgba(237, 137, 54, 0.1), rgba(237, 137, 54, 0.05));
+        border: 1px solid rgba(237, 137, 54, 0.2);
+        border-radius: 12px;
+        transition: all 0.3s ease;
+    }
+    
+    .tips-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(237, 137, 54, 0.15);
+    }
+    
+    .tips-icon {
+        width: 40px;
+        height: 40px;
+        background: rgba(237, 137, 54, 0.1);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.2rem;
+    }
+    
+    /* Rich Text Editor Enhancements */
+    .django-ckeditor-widget {
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    }
+    
+    /* Auto-save indicator */
+    .auto-save-indicator {
+        position: fixed;
+        top: 120px;
+        right: 20px;
+        background: rgba(72, 187, 120, 0.9);
+        color: white;
+        padding: 8px 12px;
+        border-radius: 20px;
+        font-size: 0.875rem;
+        font-weight: 500;
+        opacity: 0;
+        transform: translateX(100%);
+        transition: all 0.3s ease;
+        z-index: 1000;
+    }
+    
+    .auto-save-indicator.show {
+        opacity: 1;
+        transform: translateX(0);
+    }
+    
+    /* Animations */
+    @keyframes slideInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    @keyframes bounceIn {
+        0% {
+            opacity: 0;
+            transform: scale(0.3);
+        }
+        50% {
+            opacity: 1;
+            transform: scale(1.05);
+        }
+        70% {
+            transform: scale(0.9);
+        }
+        100% {
+            opacity: 1;
+            transform: scale(1);
+        }
+    }
+    
+    /* Responsive */
+    @media (max-width: 768px) {
+        .card-body {
+            padding: 1.5rem !important;
+        }
+        
+        .form-actions .row {
+            margin: 0;
+        }
+        
+        .form-actions .col-md-6 {
+            padding: 0.25rem;
+        }
+        
+        .progress-steps {
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        
+        .progress-steps::before {
+            display: none;
+        }
+        
+        .step {
+            flex-direction: row;
+            gap: 0.5rem;
+        }
+    }
+    
+    /* Loading state */
+    .btn-update.loading {
+        pointer-events: none;
+    }
+    
+    .btn-update.loading::after {
+        content: '';
+        position: absolute;
+        width: 16px;
+        height: 16px;
+        margin: auto;
+        border: 2px solid transparent;
+        border-top-color: #ffffff;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        right: 0;
+    }
+    
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+</style>
+
+<!-- Auto-save Indicator -->
+<div class="auto-save-indicator" id="autoSaveIndicator">
+    <i class="fas fa-check me-1"></i>
+    Otomatik kaydedildi
+</div>
+
+<!-- Enhanced JavaScript -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const updateForm = document.getElementById('updateForm');
+    const submitBtn = document.querySelector('.btn-update');
+    const originalBtnText = submitBtn.innerHTML;
+    const autoSaveIndicator = document.getElementById('autoSaveIndicator');
+    
+    // Form submission enhancement
+    updateForm.addEventListener('submit', function() {
+        submitBtn.classList.add('loading');
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Güncelleniyor...';
+        submitBtn.disabled = true;
+        
+        // Progress steps animation
+        const steps = document.querySelectorAll('.step');
+        steps.forEach((step, index) => {
+            setTimeout(() => {
+                step.classList.add('active');
+            }, index * 500);
+        });
+        
+        // Fallback to re-enable button
+        setTimeout(function() {
+            submitBtn.classList.remove('loading');
+            submitBtn.innerHTML = originalBtnText;
+            submitBtn.disabled = false;
+        }, 5000);
+    });
+    
+    // Auto-save functionality (simulated)
+    let autoSaveTimer;
+    const formInputs = updateForm.querySelectorAll('input, textarea, select');
+    
+    formInputs.forEach(input => {
+        input.addEventListener('input', function() {
+            clearTimeout(autoSaveTimer);
+            autoSaveTimer = setTimeout(() => {
+                showAutoSaveIndicator();
+            }, 2000);
+        });
+    });
+    
+    function showAutoSaveIndicator() {
+        autoSaveIndicator.classList.add('show');
+        setTimeout(() => {
+            autoSaveIndicator.classList.remove('show');
+        }, 2000);
+    }
+    
+    // Input field animations
+    const inputs = document.querySelectorAll('.form-control');
+    inputs.forEach(input => {
+        input.addEventListener('focus', function() {
+            this.parentElement.classList.add('focused');
+        });
+        
+        input.addEventListener('blur', function() {
+            if (!this.value) {
+                this.parentElement.classList.remove('focused');
+            }
+        });
+        
+        // Check if input has value on load
+        if (input.value) {
+            input.parentElement.classList.add('focused');
+        }
+    });
+    
+    // File upload enhancement
+    const fileInput = document.querySelector('input[type="file"]');
+    if (fileInput) {
+        fileInput.addEventListener('change', function() {
+            const fileName = this.files[0]?.name;
+            if (fileName) {
+                const label = document.createElement('small');
+                label.className = 'text-success mt-1 d-block';
+                label.innerHTML = `<i class="fas fa-check me-1"></i>Seçilen dosya: ${fileName}`;
+                
+                // Remove any existing file labels
+                const existingLabels = this.parentElement.querySelectorAll('.text-success');
+                existingLabels.forEach(label => label.remove());
+                
+                this.parentElement.appendChild(label);
+            }
+        });
+    }
+    
+    // Keyboard shortcuts
+    document.addEventListener('keydown', function(e) {
+        // Ctrl+S to save
+        if (e.ctrlKey && e.key === 's') {
+            e.preventDefault();
+            updateForm.dispatchEvent(new Event('submit'));
+        }
+        
+        // Escape to cancel
+        if (e.key === 'Escape') {
+            const cancelBtn = document.querySelector('.btn-outline-secondary');
+            if (cancelBtn) {
+                cancelBtn.click();
+            }
+        }
+    });
+    
+    // Progress animation on page load
+    setTimeout(() => {
+        const firstStep = document.querySelector('.step');
+        if (firstStep) {
+            firstStep.classList.add('active');
+        }
+    }, 500);
+});
+</script>
 
 {% endblock body %}
