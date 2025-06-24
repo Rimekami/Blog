@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     "crispy_bootstrap4",
     "django_cleanup",
     "ckeditor",
+    "books",
 ]
 
 MIDDLEWARE = [
