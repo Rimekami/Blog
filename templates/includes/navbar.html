@@ -1,41 +1,631 @@
-<nav class="navbar navbar-toggleable-md navbar-inverse fixed-top bg-inverse">
-    <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
+<nav class="navbar navbar-expand-md navbar-dark fixed-top modern-navbar">
+    <!-- Mobile Toggle Button -->
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" 
+            aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
     </button>
-    <a class="navbar-brand" href="{% url 'index'  %}">Kitap Kurdu</a>
+    
+    <!-- Brand Logo -->
+    <a class="navbar-brand brand-logo" href="{% url 'index' %}">
+        <i class="fas fa-book-reader brand-icon"></i>
+        <span class="brand-text">Kitap Kurdu</span>
+    </a>
    
+    <!-- Navbar Content -->
     <div class="collapse navbar-collapse" id="navbarCollapse">
-      <ul class="navbar-nav mr-auto">
-        <li class="nav-item active">
-          <a class="nav-link" href="{% url 'about'  %}">Hakkımızda</a>
-        </li>
-        <li class="nav-item active">
-            <a class="nav-link" href="{% url 'article:articles'  %}">Makaleler</a>
-        </li>
-        <!-- YENİ: Books linki -->
-        <li class="nav-item active">
-            <a class="nav-link" href="{% url 'books:list'  %}">📚 Kitaplarım</a>
-        </li>
-       
-      </ul>
-      <ul class="navbar-nav ml-auto">
-      {% if request.user.is_authenticated %}
-      <li class="nav-item active">
-        <a class="nav-link" href="{% url 'article:dashboard'  %}">Kontrol Paneli</a>
-      </li>
-      <li class="nav-item active">
-        <a class="nav-link" href="{% url 'user:logout'  %}">Çıkış Yap</a>
-      </li>
-      {% else %}
-      <li class="nav-item active">
-        <a class="nav-link" href="{% url 'user:login'  %}">Giriş Yap</a>
-      </li>
-      {% endif %}
-      <li class="nav-item active">
-        <a class="nav-link" href="{% url 'user:register'  %}">Kayıt Ol</a>
-      </li>
-     
-      </ul>
+        <!-- Left Navigation -->
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item">
+                <a class="nav-link nav-link-modern" href="{% url 'about' %}">
+                    <i class="fas fa-info-circle nav-icon"></i>
+                    <span>Hakkımızda</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link nav-link-modern" href="{% url 'article:articles' %}">
+                    <i class="fas fa-newspaper nav-icon"></i>
+                    <span>Makaleler</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link nav-link-modern" href="{% url 'books:list' %}">
+                    <i class="fas fa-books nav-icon"></i>
+                    <span>Kitaplarım</span>
+                </a>
+            </li>
+        </ul>
+        
+        <!-- Right Navigation -->
+        <ul class="navbar-nav ml-auto">
+            {% if request.user.is_authenticated %}
+                <!-- User Dropdown -->
+                <li class="nav-item dropdown user-dropdown">
+                    <a class="nav-link dropdown-toggle user-menu" href="#" id="userDropdown" 
+                       role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <div class="user-avatar">
+                            {{ request.user.username|first|upper }}
+                        </div>
+                        <span class="user-name">{{ request.user.username }}</span>
+                        <i class="fas fa-chevron-down dropdown-arrow"></i>
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-right user-dropdown-menu" aria-labelledby="userDropdown">
+                        <div class="dropdown-header">
+                            <strong>{{ request.user.username }}</strong>
+                            <small class="text-muted">Hoş geldiniz</small>
+                        </div>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" href="{% url 'article:dashboard' %}">
+                            <i class="fas fa-tachometer-alt me-2"></i>
+                            Kontrol Paneli
+                        </a>
+                        <a class="dropdown-item" href="{% url 'books:list' %}">
+                            <i class="fas fa-books me-2"></i>
+                            Kitaplarım
+                        </a>
+                        <a class="dropdown-item" href="{% url 'article:addarticle' %}">
+                            <i class="fas fa-plus me-2"></i>
+                            Yeni Makale
+                        </a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item text-danger" href="{% url 'user:logout' %}">
+                            <i class="fas fa-sign-out-alt me-2"></i>
+                            Çıkış Yap
+                        </a>
+                    </div>
+                </li>
+                
+                <!-- Quick Actions -->
+                <li class="nav-item">
+                    <a class="nav-link quick-action" href="{% url 'books:add' %}" title="Hızlı Kitap Ekle">
+                        <i class="fas fa-plus-circle"></i>
+                    </a>
+                </li>
+            {% else %}
+                <!-- Guest Navigation -->
+                <li class="nav-item">
+                    <a class="nav-link nav-link-modern" href="{% url 'user:login' %}">
+                        <i class="fas fa-sign-in-alt nav-icon"></i>
+                        <span>Giriş Yap</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link nav-link-cta" href="{% url 'user:register' %}">
+                        <i class="fas fa-user-plus nav-icon"></i>
+                        <span>Üye Ol</span>
+                    </a>
+                </li>
+            {% endif %}
+        </ul>
     </div>
-
+    
+    <!-- Search Overlay (Hidden by default) -->
+    <div class="search-overlay" id="searchOverlay">
+        <div class="search-container">
+            <div class="search-box">
+                <input type="text" class="search-input" placeholder="Makale, kitap veya yazar ara...">
+                <button class="search-btn">
+                    <i class="fas fa-search"></i>
+                </button>
+            </div>
+            <button class="search-close" onclick="toggleSearch()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+    </div>
 </nav>
+
+<style>
+    /* Modern Navbar Base */
+    .modern-navbar {
+        background: rgba(45, 55, 72, 0.95) !important;
+        backdrop-filter: blur(20px);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        padding: 0.5rem 1rem;
+        transition: all 0.3s ease;
+        box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+    }
+    
+    .modern-navbar.scrolled {
+        background: rgba(45, 55, 72, 0.98) !important;
+        box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2);
+    }
+    
+    /* Brand Logo */
+    .brand-logo {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        color: white !important;
+        text-decoration: none;
+        font-weight: 700;
+        font-size: 1.5rem;
+        transition: all 0.3s ease;
+    }
+    
+    .brand-logo:hover {
+        color: #667eea !important;
+        text-decoration: none;
+        transform: scale(1.05);
+    }
+    
+    .brand-icon {
+        background: linear-gradient(135deg, #667eea, #48bb78);
+        background-clip: text;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        font-size: 1.8rem;
+        animation: pulse 2s infinite;
+    }
+    
+    .brand-text {
+        background: linear-gradient(135deg, #667eea, #48bb78);
+        background-clip: text;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+    
+    /* Navigation Links */
+    .nav-link-modern {
+        color: rgba(255, 255, 255, 0.85) !important;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.75rem 1rem !important;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+        font-weight: 500;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .nav-link-modern::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+        transition: left 0.5s ease;
+    }
+    
+    .nav-link-modern:hover::before {
+        left: 100%;
+    }
+    
+    .nav-link-modern:hover {
+        color: white !important;
+        background: rgba(102, 126, 234, 0.2);
+        text-decoration: none;
+        transform: translateY(-1px);
+    }
+    
+    .nav-link-modern.active {
+        color: white !important;
+        background: rgba(102, 126, 234, 0.3);
+    }
+    
+    .nav-icon {
+        font-size: 0.9rem;
+        opacity: 0.8;
+    }
+    
+    /* CTA Link (Register) */
+    .nav-link-cta {
+        background: linear-gradient(135deg, #667eea, #48bb78) !important;
+        color: white !important;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.75rem 1.5rem !important;
+        border-radius: 20px;
+        transition: all 0.3s ease;
+        font-weight: 600;
+        margin-left: 0.5rem;
+    }
+    
+    .nav-link-cta:hover {
+        color: white !important;
+        text-decoration: none;
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+    }
+    
+    /* User Dropdown */
+    .user-dropdown .user-menu {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        color: white !important;
+        padding: 0.5rem 1rem !important;
+        border-radius: 25px;
+        background: rgba(255, 255, 255, 0.1);
+        transition: all 0.3s ease;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+    
+    .user-menu:hover {
+        background: rgba(255, 255, 255, 0.2);
+        text-decoration: none;
+        color: white !important;
+        transform: translateY(-1px);
+    }
+    
+    .user-avatar {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #667eea, #48bb78);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-weight: bold;
+        font-size: 0.875rem;
+    }
+    
+    .user-name {
+        font-weight: 500;
+        max-width: 120px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+    
+    .dropdown-arrow {
+        font-size: 0.75rem;
+        transition: transform 0.3s ease;
+    }
+    
+    .user-dropdown.show .dropdown-arrow {
+        transform: rotate(180deg);
+    }
+    
+    /* User Dropdown Menu */
+    .user-dropdown-menu {
+        background: white;
+        border: none;
+        border-radius: 15px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+        margin-top: 0.5rem;
+        min-width: 220px;
+        overflow: hidden;
+        animation: dropdownSlide 0.3s ease;
+    }
+    
+    .user-dropdown-menu .dropdown-header {
+        background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(72, 187, 120, 0.1));
+        padding: 1rem;
+        text-align: center;
+        border-bottom: 1px solid #e2e8f0;
+    }
+    
+    .user-dropdown-menu .dropdown-item {
+        padding: 0.75rem 1rem;
+        color: #4a5568;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    
+    .user-dropdown-menu .dropdown-item:hover {
+        background: rgba(102, 126, 234, 0.05);
+        color: #667eea;
+        transform: translateX(5px);
+    }
+    
+    .user-dropdown-menu .dropdown-item.text-danger:hover {
+        background: rgba(239, 68, 68, 0.05);
+        color: #ef4444;
+    }
+    
+    /* Quick Action Button */
+    .quick-action {
+        background: rgba(72, 187, 120, 0.2);
+        color: #48bb78 !important;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-left: 0.5rem;
+        transition: all 0.3s ease;
+        border: 2px solid rgba(72, 187, 120, 0.3);
+    }
+    
+    .quick-action:hover {
+        background: #48bb78;
+        color: white !important;
+        text-decoration: none;
+        transform: rotate(90deg) scale(1.1);
+        box-shadow: 0 4px 15px rgba(72, 187, 120, 0.4);
+    }
+    
+    /* Mobile Navbar Toggler */
+    .navbar-toggler {
+        border: 2px solid rgba(255, 255, 255, 0.3);
+        border-radius: 8px;
+        padding: 0.5rem;
+        transition: all 0.3s ease;
+    }
+    
+    .navbar-toggler:hover {
+        border-color: rgba(255, 255, 255, 0.5);
+        background: rgba(255, 255, 255, 0.1);
+    }
+    
+    .navbar-toggler-icon {
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%28255, 255, 255, 0.8%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+    }
+    
+    /* Search Overlay */
+    .search-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.8);
+        z-index: 9999;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        backdrop-filter: blur(5px);
+    }
+    
+    .search-overlay.active {
+        display: flex;
+    }
+    
+    .search-container {
+        position: relative;
+        max-width: 600px;
+        width: 90%;
+    }
+    
+    .search-box {
+        display: flex;
+        background: white;
+        border-radius: 25px;
+        overflow: hidden;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+    }
+    
+    .search-input {
+        flex: 1;
+        border: none;
+        padding: 1.5rem 2rem;
+        font-size: 1.2rem;
+        outline: none;
+    }
+    
+    .search-btn {
+        background: linear-gradient(135deg, #667eea, #48bb78);
+        border: none;
+        color: white;
+        padding: 1.5rem 2rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+    
+    .search-btn:hover {
+        background: linear-gradient(135deg, #5a67d8, #38a169);
+    }
+    
+    .search-close {
+        position: absolute;
+        top: -60px;
+        right: 0;
+        background: transparent;
+        border: 2px solid white;
+        color: white;
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+    
+    .search-close:hover {
+        background: white;
+        color: #2d3748;
+        transform: rotate(90deg);
+    }
+    
+    /* Animations */
+    @keyframes pulse {
+        0%, 100% { transform: scale(1); }
+        50% { transform: scale(1.05); }
+    }
+    
+    @keyframes dropdownSlide {
+        from {
+            opacity: 0;
+            transform: translateY(-10px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    /* Active Page Indicator */
+    .nav-item.current-page .nav-link-modern {
+        background: rgba(102, 126, 234, 0.3);
+        color: white !important;
+    }
+    
+    .nav-item.current-page .nav-link-modern::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 20px;
+        height: 2px;
+        background: linear-gradient(135deg, #667eea, #48bb78);
+        border-radius: 1px;
+    }
+    
+    /* Responsive Design */
+    @media (max-width: 768px) {
+        .modern-navbar {
+            padding: 0.5rem;
+        }
+        
+        .brand-text {
+            font-size: 1.2rem;
+        }
+        
+        .navbar-collapse {
+            background: rgba(45, 55, 72, 0.98);
+            margin-top: 1rem;
+            border-radius: 15px;
+            padding: 1rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .nav-link-modern {
+            margin: 0.25rem 0;
+            border-radius: 10px;
+        }
+        
+        .nav-link-cta {
+            margin: 0.5rem 0;
+            text-align: center;
+        }
+        
+        .user-menu {
+            justify-content: center;
+            margin: 0.5rem 0;
+        }
+        
+        .quick-action {
+            margin: 0.5rem auto;
+            display: flex;
+        }
+        
+        .user-dropdown-menu {
+            position: static !important;
+            transform: none !important;
+            box-shadow: none;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            margin-top: 0.5rem;
+        }
+        
+        .user-dropdown-menu .dropdown-item {
+            color: rgba(255, 255, 255, 0.9);
+        }
+        
+        .user-dropdown-menu .dropdown-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+    }
+    
+    /* Notification Badge (for future use) */
+    .notification-badge {
+        position: absolute;
+        top: -5px;
+        right: -5px;
+        background: #ef4444;
+        color: white;
+        border-radius: 50%;
+        width: 18px;
+        height: 18px;
+        font-size: 0.7rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        animation: pulse 2s infinite;
+    }
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Navbar scroll effect
+    window.addEventListener('scroll', function() {
+        const navbar = document.querySelector('.modern-navbar');
+        if (window.scrollY > 50) {
+            navbar.classList.add('scrolled');
+        } else {
+            navbar.classList.remove('scrolled');
+        }
+    });
+    
+    // Active page detection
+    const currentPath = window.location.pathname;
+    const navLinks = document.querySelectorAll('.nav-link-modern');
+    
+    navLinks.forEach(link => {
+        const href = link.getAttribute('href');
+        if (href && currentPath.includes(href.replace(/\/$/, ''))) {
+            link.closest('.nav-item').classList.add('current-page');
+        }
+    });
+    
+    // Smooth dropdown animation
+    const userDropdown = document.querySelector('.user-dropdown');
+    if (userDropdown) {
+        userDropdown.addEventListener('show.bs.dropdown', function() {
+            this.classList.add('show');
+        });
+        
+        userDropdown.addEventListener('hide.bs.dropdown', function() {
+            this.classList.remove('show');
+        });
+    }
+    
+    // Mobile menu enhancement
+    const navbarToggler = document.querySelector('.navbar-toggler');
+    const navbarCollapse = document.querySelector('.navbar-collapse');
+    
+    if (navbarToggler && navbarCollapse) {
+        navbarToggler.addEventListener('click', function() {
+            setTimeout(() => {
+                if (navbarCollapse.classList.contains('show')) {
+                    document.body.style.overflow = 'hidden';
+                } else {
+                    document.body.style.overflow = '';
+                }
+            }, 300);
+        });
+    }
+    
+    // Close mobile menu when clicking outside
+    document.addEventListener('click', function(e) {
+        if (navbarCollapse && navbarCollapse.classList.contains('show')) {
+            if (!e.target.closest('.navbar')) {
+                navbarToggler.click();
+                document.body.style.overflow = '';
+            }
+        }
+    });
+});
+
+// Search overlay functions
+function toggleSearch() {
+    const searchOverlay = document.getElementById('searchOverlay');
+    searchOverlay.classList.toggle('active');
+    
+    if (searchOverlay.classList.contains('active')) {
+        document.querySelector('.search-input').focus();
+        document.body.style.overflow = 'hidden';
+    } else {
+        document.body.style.overflow = '';
+    }
+}
+
+// ESC key to close search
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+        const searchOverlay = document.getElementById('searchOverlay');
+        if (searchOverlay.classList.contains('active')) {
+            toggleSearch();
+        }
+    }
+});
+</script>
