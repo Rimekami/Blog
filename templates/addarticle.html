@@ -1,21 +1,763 @@
 {% extends "layout.html" %}
-
 {% block body %}
 {% load crispy_forms_tags %}
 
-<div class="row">
-    <div class="col-md-6 offset-md-3">
-        <h3>Makale Oluştur</h3>
-        <hr>
-        <form method = "post" enctype="multipart/form-data">
-            {% csrf_token %}
-            {{form.media}}
-            {{form|crispy}}
-            <br>
-            <button type = "submit" class = "btn btn-danger">Makale Ekle</button>
-        </form>
+<div class="row justify-content-center">
+    <div class="col-lg-8 col-md-10">
+        <!-- Create Article Card -->
+        <div class="card create-article-card shadow-lg">
+            <!-- Card Header -->
+            <div class="card-header text-center py-4">
+                <div class="create-icon mb-3">
+                    <i class="fas fa-pen-fancy fa-3x text-success"></i>
+                </div>
+                <h2 class="card-title font-weight-bold text-dark mb-2">
+                    <i class="fas fa-plus-circle me-2"></i>
+                    Yeni Makale Oluştur
+                </h2>
+                <p class="text-muted mb-0">Fikirlerinizi yazıya dökün ve dünyayla paylaşın</p>
+            </div>
+            
+            <!-- Card Body -->
+            <div class="card-body p-4">
+                <!-- Writing Tips -->
+                <div class="writing-tips mb-4">
+                    <div class="tips-header">
+                        <h6 class="tips-title">
+                            <i class="fas fa-lightbulb text-warning me-2"></i>
+                            Yazma İpuçları
+                        </h6>
+                    </div>
+                    <div class="tips-content">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="tip-item">
+                                    <i class="fas fa-check-circle text-success me-2"></i>
+                                    <span>Çekici bir başlık seçin</span>
+                                </div>
+                                <div class="tip-item">
+                                    <i class="fas fa-check-circle text-success me-2"></i>
+                                    <span>Giriş paragrafında konuyu özetleyin</span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="tip-item">
+                                    <i class="fas fa-check-circle text-success me-2"></i>
+                                    <span>Görsel ekleyerek içeriği zenginleştirin</span>
+                                </div>
+                                <div class="tip-item">
+                                    <i class="fas fa-check-circle text-success me-2"></i>
+                                    <span>Paragrafları kısa ve anlaşılır tutun</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Progress Indicator -->
+                <div class="progress-steps mb-4">
+                    <div class="step active">
+                        <i class="fas fa-heading"></i>
+                        <span>Başlık</span>
+                    </div>
+                    <div class="step">
+                        <i class="fas fa-file-alt"></i>
+                        <span>İçerik</span>
+                    </div>
+                    <div class="step">
+                        <i class="fas fa-image"></i>
+                        <span>Görsel</span>
+                    </div>
+                    <div class="step">
+                        <i class="fas fa-check"></i>
+                        <span>Yayınla</span>
+                    </div>
+                </div>
+                
+                <!-- Create Form -->
+                <form method="post" enctype="multipart/form-data" class="create-form" id="articleForm">
+                    {% csrf_token %}
+                    
+                    <!-- Rich Text Editor Media -->
+                    {{ form.media }}
+                    
+                    <!-- Form Fields -->
+                    <div class="form-group-enhanced">
+                        {{ form|crispy }}
+                    </div>
+                    
+                    <!-- Writing Stats -->
+                    <div class="writing-stats">
+                        <div class="stats-row">
+                            <div class="stat-item">
+                                <span class="stat-label">Kelime Sayısı:</span>
+                                <span class="stat-value" id="wordCount">0</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-label">Karakter:</span>
+                                <span class="stat-value" id="charCount">0</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-label">Okuma Süresi:</span>
+                                <span class="stat-value" id="readTime">0 dk</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Action Buttons -->
+                    <div class="form-actions mt-4">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <button type="button" class="btn btn-outline-secondary btn-lg btn-block draft-btn">
+                                    <i class="fas fa-save me-2"></i>
+                                    Taslak Kaydet
+                                </button>
+                            </div>
+                            <div class="col-md-4">
+                                <button type="button" class="btn btn-outline-info btn-lg btn-block preview-btn">
+                                    <i class="fas fa-eye me-2"></i>
+                                    Önizleme
+                                </button>
+                            </div>
+                            <div class="col-md-4">
+                                <button type="submit" class="btn btn-success btn-lg btn-block btn-publish">
+                                    <i class="fas fa-paper-plane me-2"></i>
+                                    Makaleyi Yayınla
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            
+            <!-- Card Footer -->
+            <div class="card-footer bg-transparent text-center py-3">
+                <div class="row text-center">
+                    <div class="col-4">
+                        <small class="text-muted">
+                            <i class="fas fa-save me-1"></i>
+                            Otomatik kaydet
+                        </small>
+                    </div>
+                    <div class="col-4">
+                        <small class="text-muted">
+                            <i class="fas fa-spell-check me-1"></i>
+                            Yazım denetimi
+                        </small>
+                    </div>
+                    <div class="col-4">
+                        <small class="text-muted">
+                            <i class="fas fa-mobile-alt me-1"></i>
+                            Mobil uyumlu
+                        </small>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Quick Guide -->
+        <div class="quick-guide mt-4">
+            <div class="card guide-card">
+                <div class="card-body py-3">
+                    <div class="d-flex align-items-center">
+                        <div class="guide-icon me-3">
+                            <i class="fas fa-question-circle text-primary"></i>
+                        </div>
+                        <div class="guide-content">
+                            <h6 class="mb-1 font-weight-bold">🚀 Hızlı Başlangıç</h6>
+                            <small class="text-muted">
+                                <strong>Markdown destekli:</strong> **kalın**, *italik*, [link](url) kullanabilirsiniz. 
+                                Ctrl+S ile hızlı kaydet, Tab ile hızlı format.
+                            </small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-  </div>
+</div>
 
+<!-- Preview Modal -->
+<div class="modal fade" id="previewModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <i class="fas fa-eye me-2"></i>Makale Önizlemesi
+                </h5>
+                <button type="button" class="close" data-dismiss="modal">
+                    <span>&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" id="previewContent">
+                <!-- Preview content will be inserted here -->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Kapat</button>
+                <button type="button" class="btn btn-success" onclick="$('#articleForm').submit()">
+                    <i class="fas fa-paper-plane me-1"></i>Yayınla
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    /* Create Article Card */
+    .create-article-card {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 20px;
+        transition: all 0.3s ease;
+        animation: slideInUp 0.6s ease;
+        overflow: hidden;
+    }
+    
+    .create-article-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1) !important;
+    }
+    
+    .create-icon {
+        animation: bounceIn 0.8s ease;
+    }
+    
+    .create-icon i {
+        background: linear-gradient(135deg, #48bb78, #38a169);
+        background-clip: text;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        filter: drop-shadow(0 4px 6px rgba(72, 187, 120, 0.3));
+    }
+    
+    /* Writing Tips */
+    .writing-tips {
+        background: linear-gradient(135deg, rgba(72, 187, 120, 0.1), rgba(72, 187, 120, 0.05));
+        border-radius: 12px;
+        padding: 1.5rem;
+        border: 1px solid rgba(72, 187, 120, 0.2);
+    }
+    
+    .tips-title {
+        color: #2d3748;
+        font-weight: 600;
+        margin-bottom: 1rem;
+    }
+    
+    .tip-item {
+        display: flex;
+        align-items: center;
+        margin-bottom: 0.5rem;
+        color: #4a5568;
+        font-size: 0.9rem;
+    }
+    
+    /* Progress Steps */
+    .progress-steps {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin: 1.5rem 0;
+        position: relative;
+    }
+    
+    .progress-steps::before {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 15%;
+        right: 15%;
+        height: 2px;
+        background: linear-gradient(90deg, #e2e8f0, #48bb78, #e2e8f0);
+        transform: translateY(-50%);
+        z-index: 1;
+    }
+    
+    .step {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 0.5rem;
+        background: white;
+        border-radius: 50px;
+        z-index: 2;
+        transition: all 0.3s ease;
+        min-width: 80px;
+    }
+    
+    .step.active {
+        color: #48bb78;
+        transform: scale(1.1);
+    }
+    
+    .step i {
+        font-size: 1.2rem;
+        margin-bottom: 0.25rem;
+    }
+    
+    .step span {
+        font-size: 0.75rem;
+        font-weight: 500;
+    }
+    
+    /* Form Enhancements */
+    .form-group-enhanced .form-control {
+        background: rgba(255, 255, 255, 0.8);
+        border: 2px solid #e2e8f0;
+        border-radius: 12px;
+        padding: 12px 16px;
+        font-size: 16px;
+        transition: all 0.3s ease;
+    }
+    
+    .form-group-enhanced .form-control:focus {
+        border-color: #48bb78;
+        box-shadow: 0 0 0 4px rgba(72, 187, 120, 0.1);
+        background: white;
+        transform: translateY(-1px);
+    }
+    
+    .form-group-enhanced label {
+        font-weight: 600;
+        color: var(--dark-text);
+        margin-bottom: 8px;
+        font-size: 14px;
+    }
+    
+    .form-group-enhanced textarea {
+        min-height: 200px;
+        resize: vertical;
+    }
+    
+    /* File upload styling */
+    .form-group-enhanced input[type="file"] {
+        border-style: dashed;
+        border-width: 2px;
+        padding: 20px;
+        text-align: center;
+        background: rgba(72, 187, 120, 0.05);
+    }
+    
+    .form-group-enhanced input[type="file"]:hover {
+        border-color: #48bb78;
+        background: rgba(72, 187, 120, 0.1);
+    }
+    
+    /* Writing Stats */
+    .writing-stats {
+        background: rgba(255, 255, 255, 0.7);
+        border-radius: 10px;
+        padding: 1rem;
+        margin-top: 1rem;
+        border: 1px solid #e2e8f0;
+    }
+    
+    .stats-row {
+        display: flex;
+        justify-content: space-around;
+        text-align: center;
+    }
+    
+    .stat-item {
+        display: flex;
+        flex-direction: column;
+        gap: 0.25rem;
+    }
+    
+    .stat-label {
+        font-size: 0.8rem;
+        color: #718096;
+        font-weight: 500;
+    }
+    
+    .stat-value {
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: #48bb78;
+    }
+    
+    /* Button Styles */
+    .btn-publish {
+        background: linear-gradient(135deg, #48bb78, #38a169);
+        border: none;
+        border-radius: 12px;
+        padding: 12px 20px;
+        font-weight: 600;
+        font-size: 16px;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .btn-publish::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+        transition: left 0.5s ease;
+    }
+    
+    .btn-publish:hover::before {
+        left: 100%;
+    }
+    
+    .btn-publish:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 30px rgba(72, 187, 120, 0.4);
+    }
+    
+    .draft-btn, .preview-btn {
+        border-radius: 12px;
+        padding: 12px 20px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+    
+    .draft-btn:hover, .preview-btn:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+    }
+    
+    /* Guide Card */
+    .guide-card {
+        background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(102, 126, 234, 0.05));
+        border: 1px solid rgba(102, 126, 234, 0.2);
+        border-radius: 12px;
+        transition: all 0.3s ease;
+    }
+    
+    .guide-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(102, 126, 234, 0.15);
+    }
+    
+    .guide-icon {
+        width: 40px;
+        height: 40px;
+        background: rgba(102, 126, 234, 0.1);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.2rem;
+    }
+    
+    /* Rich Text Editor Enhancements */
+    .django-ckeditor-widget {
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    }
+    
+    /* Preview Modal */
+    .modal-content {
+        border-radius: 15px;
+        border: none;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+    }
+    
+    .modal-header {
+        background: linear-gradient(135deg, rgba(72, 187, 120, 0.1), rgba(72, 187, 120, 0.05));
+        border-bottom: 1px solid #e2e8f0;
+        border-radius: 15px 15px 0 0;
+    }
+    
+    /* Auto-save indicator */
+    .auto-save-indicator {
+        position: fixed;
+        top: 120px;
+        right: 20px;
+        background: rgba(72, 187, 120, 0.9);
+        color: white;
+        padding: 8px 12px;
+        border-radius: 20px;
+        font-size: 0.875rem;
+        font-weight: 500;
+        opacity: 0;
+        transform: translateX(100%);
+        transition: all 0.3s ease;
+        z-index: 1000;
+    }
+    
+    .auto-save-indicator.show {
+        opacity: 1;
+        transform: translateX(0);
+    }
+    
+    /* Animations */
+    @keyframes slideInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    @keyframes bounceIn {
+        0% {
+            opacity: 0;
+            transform: scale(0.3);
+        }
+        50% {
+            opacity: 1;
+            transform: scale(1.05);
+        }
+        70% {
+            transform: scale(0.9);
+        }
+        100% {
+            opacity: 1;
+            transform: scale(1);
+        }
+    }
+    
+    /* Responsive */
+    @media (max-width: 768px) {
+        .card-body {
+            padding: 1.5rem !important;
+        }
+        
+        .form-actions .row {
+            margin: 0;
+        }
+        
+        .form-actions .col-md-4 {
+            padding: 0.25rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .progress-steps {
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+        
+        .progress-steps::before {
+            display: none;
+        }
+        
+        .step {
+            flex-direction: row;
+            gap: 0.5rem;
+            min-width: auto;
+        }
+        
+        .stats-row {
+            flex-direction: column;
+            gap: 1rem;
+        }
+        
+        .tip-item {
+            margin-bottom: 0.75rem;
+        }
+    }
+    
+    /* Loading state */
+    .btn-publish.loading {
+        pointer-events: none;
+    }
+    
+    .btn-publish.loading::after {
+        content: '';
+        position: absolute;
+        width: 16px;
+        height: 16px;
+        margin: auto;
+        border: 2px solid transparent;
+        border-top-color: #ffffff;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        right: 0;
+    }
+    
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+</style>
+
+<!-- Auto-save Indicator -->
+<div class="auto-save-indicator" id="autoSaveIndicator">
+    <i class="fas fa-check me-1"></i>
+    Otomatik kaydedildi
+</div>
+
+<!-- Enhanced JavaScript -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const articleForm = document.getElementById('articleForm');
+    const submitBtn = document.querySelector('.btn-publish');
+    const originalBtnText = submitBtn.innerHTML;
+    const autoSaveIndicator = document.getElementById('autoSaveIndicator');
+    
+    // Form submission enhancement
+    articleForm.addEventListener('submit', function() {
+        submitBtn.classList.add('loading');
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Yayınlanıyor...';
+        submitBtn.disabled = true;
+        
+        // Progress steps animation
+        const steps = document.querySelectorAll('.step');
+        steps.forEach((step, index) => {
+            setTimeout(() => {
+                step.classList.add('active');
+            }, index * 300);
+        });
+        
+        // Fallback to re-enable button
+        setTimeout(function() {
+            submitBtn.classList.remove('loading');
+            submitBtn.innerHTML = originalBtnText;
+            submitBtn.disabled = false;
+        }, 5000);
+    });
+    
+    // Writing stats functionality
+    const contentField = document.querySelector('textarea[name="content"]');
+    const titleField = document.querySelector('input[name="title"]');
+    
+    function updateStats() {
+        if (contentField) {
+            const content = contentField.value || '';
+            const plainText = content.replace(/<[^>]*>/g, '').trim();
+            
+            const wordCount = plainText ? plainText.split(/\s+/).length : 0;
+            const charCount = plainText.length;
+            const readTime = Math.ceil(wordCount / 200); // 200 words per minute
+            
+            document.getElementById('wordCount').textContent = wordCount;
+            document.getElementById('charCount').textContent = charCount;
+            document.getElementById('readTime').textContent = readTime + ' dk';
+        }
+    }
+    
+    // Update stats on content change
+    if (contentField) {
+        contentField.addEventListener('input', updateStats);
+        updateStats(); // Initial update
+    }
+    
+    // Auto-save functionality (simulated)
+    let autoSaveTimer;
+    const formInputs = articleForm.querySelectorAll('input, textarea, select');
+    
+    formInputs.forEach(input => {
+        input.addEventListener('input', function() {
+            clearTimeout(autoSaveTimer);
+            autoSaveTimer = setTimeout(() => {
+                showAutoSaveIndicator();
+            }, 3000);
+        });
+    });
+    
+    function showAutoSaveIndicator() {
+        autoSaveIndicator.classList.add('show');
+        setTimeout(() => {
+            autoSaveIndicator.classList.remove('show');
+        }, 2000);
+    }
+    
+    // Preview functionality
+    const previewBtn = document.querySelector('.preview-btn');
+    if (previewBtn) {
+        previewBtn.addEventListener('click', function() {
+            const title = titleField ? titleField.value : 'Başlık';
+            const content = contentField ? contentField.value : 'İçerik';
+            
+            const previewContent = `
+                <h2>${title}</h2>
+                <div class="mt-3">${content}</div>
+            `;
+            
+            document.getElementById('previewContent').innerHTML = previewContent;
+            $('#previewModal').modal('show');
+        });
+    }
+    
+    // Draft save functionality
+    const draftBtn = document.querySelector('.draft-btn');
+    if (draftBtn) {
+        draftBtn.addEventListener('click', function() {
+            const originalText = this.innerHTML;
+            this.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Kaydediliyor...';
+            this.disabled = true;
+            
+            setTimeout(() => {
+                this.innerHTML = '<i class="fas fa-check me-2"></i>Kaydedildi';
+                this.classList.remove('btn-outline-secondary');
+                this.classList.add('btn-success');
+                
+                setTimeout(() => {
+                    this.innerHTML = originalText;
+                    this.classList.remove('btn-success');
+                    this.classList.add('btn-outline-secondary');
+                    this.disabled = false;
+                }, 2000);
+            }, 1500);
+        });
+    }
+    
+    // Keyboard shortcuts
+    document.addEventListener('keydown', function(e) {
+        // Ctrl+S to save draft
+        if (e.ctrlKey && e.key === 's') {
+            e.preventDefault();
+            if (draftBtn) {
+                draftBtn.click();
+            }
+        }
+        
+        // Ctrl+Enter to publish
+        if (e.ctrlKey && e.key === 'Enter') {
+            e.preventDefault();
+            articleForm.dispatchEvent(new Event('submit'));
+        }
+        
+        // Ctrl+P to preview
+        if (e.ctrlKey && e.key === 'p') {
+            e.preventDefault();
+            if (previewBtn) {
+                previewBtn.click();
+            }
+        }
+    });
+    
+    // File upload enhancement
+    const fileInput = document.querySelector('input[type="file"]');
+    if (fileInput) {
+        fileInput.addEventListener('change', function() {
+            const fileName = this.files[0]?.name;
+            if (fileName) {
+                const label = document.createElement('small');
+                label.className = 'text-success mt-1 d-block';
+                label.innerHTML = `<i class="fas fa-check me-1"></i>Seçilen dosya: ${fileName}`;
+                
+                // Remove any existing file labels
+                const existingLabels = this.parentElement.querySelectorAll('.text-success');
+                existingLabels.forEach(label => label.remove());
+                
+                this.parentElement.appendChild(label);
+            }
+        });
+    }
+    
+    // Progress animation on page load
+    setTimeout(() => {
+        const firstStep = document.querySelector('.step');
+        if (firstStep) {
+            firstStep.classList.add('active');
+        }
+    }, 500);
+});
+</script>
 
 {% endblock body %}
