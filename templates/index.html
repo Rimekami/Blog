@@ -48,15 +48,6 @@
             </div>
         {% endif %}
     </div>
-    
-    <!-- Floating Books Animation -->
-    <div class="floating-books">
-        <div class="book book-1">📖</div>
-        <div class="book book-2">📚</div>
-        <div class="book book-3">📗</div>
-        <div class="book book-4">📘</div>
-        <div class="book book-5">📙</div>
-    </div>
 </div>
 
 <!-- Features Section -->
@@ -127,7 +118,7 @@
     </div>
 </div>
 
-<!-- Stats Section -->
+<!-- Stats Section (Only for authenticated users) -->
 {% if request.user.is_authenticated %}
 <div class="stats-section mt-5">
     <div class="container">
@@ -135,25 +126,25 @@
             <div class="row text-center">
                 <div class="col-md-3 col-6">
                     <div class="stat-item">
-                        <div class="stat-number" id="totalBooks">-</div>
+                        <div class="stat-number" id="totalBooks">42</div>
                         <div class="stat-label">Toplam Kitap</div>
                     </div>
                 </div>
                 <div class="col-md-3 col-6">
                     <div class="stat-item">
-                        <div class="stat-number" id="readBooks">-</div>
+                        <div class="stat-number" id="readBooks">28</div>
                         <div class="stat-label">Okunan Kitap</div>
                     </div>
                 </div>
                 <div class="col-md-3 col-6">
                     <div class="stat-item">
-                        <div class="stat-number" id="currentBooks">-</div>
+                        <div class="stat-number" id="currentBooks">3</div>
                         <div class="stat-label">Şu An Okunan</div>
                     </div>
                 </div>
                 <div class="col-md-3 col-6">
                     <div class="stat-item">
-                        <div class="stat-number" id="totalArticles">-</div>
+                        <div class="stat-number" id="totalArticles">15</div>
                         <div class="stat-label">Yazılan Makale</div>
                     </div>
                 </div>
@@ -184,39 +175,30 @@
     </div>
 </div>
 
-<!-- Custom Styles -->
 <style>
     /* Hero Section */
     .hero-section {
         background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(72, 187, 120, 0.1));
         border-radius: 20px;
         padding: 4rem 2rem;
-        position: relative;
-        overflow: hidden;
         margin-bottom: 2rem;
         animation: fadeInUp 0.8s ease;
     }
     
-    .hero-content {
-        position: relative;
-        z-index: 2;
-    }
-    
     .hero-icon i {
-        background: linear-gradient(135deg, var(--primary-color), var(--success-color));
+        background: linear-gradient(135deg, #667eea, #48bb78);
         background-clip: text;
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
-        filter: drop-shadow(0 4px 8px rgba(102, 126, 234, 0.3));
         animation: bounceIn 1s ease;
     }
     
     .hero-title {
         font-size: 3rem;
         font-weight: 700;
-        color: var(--dark-text);
+        color: #2d3748;
         margin-bottom: 1.5rem;
-        background: linear-gradient(135deg, var(--primary-color), var(--success-color));
+        background: linear-gradient(135deg, #667eea, #48bb78);
         background-clip: text;
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
@@ -224,7 +206,7 @@
     
     .hero-subtitle {
         font-size: 1.25rem;
-        color: var(--muted-text);
+        color: #718096;
         margin-bottom: 2rem;
         max-width: 600px;
         margin-left: auto;
@@ -238,7 +220,6 @@
         margin: 2rem auto;
         max-width: 400px;
         box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
-        animation: slideInUp 0.6s ease 0.3s both;
     }
     
     .user-greeting {
@@ -252,55 +233,17 @@
         margin-left: 1rem;
     }
     
-    .guest-cta {
-        animation: fadeInUp 0.6s ease 0.5s both;
-    }
-    
-    /* Floating Books Animation */
-    .floating-books {
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        pointer-events: none;
-        z-index: 1;
-    }
-    
-    .book {
-        position: absolute;
-        font-size: 2rem;
-        animation: float 6s ease-in-out infinite;
-        opacity: 0.6;
-    }
-    
-    .book-1 { top: 10%; left: 10%; animation-delay: 0s; }
-    .book-2 { top: 20%; right: 15%; animation-delay: 1s; }
-    .book-3 { bottom: 30%; left: 20%; animation-delay: 2s; }
-    .book-4 { bottom: 20%; right: 25%; animation-delay: 3s; }
-    .book-5 { top: 50%; left: 5%; animation-delay: 4s; }
-    
-    @keyframes float {
-        0%, 100% { transform: translateY(0px) rotate(0deg); }
-        33% { transform: translateY(-20px) rotate(5deg); }
-        66% { transform: translateY(10px) rotate(-3deg); }
-    }
-    
     /* Features Section */
-    .features-section {
-        animation: fadeInUp 0.8s ease 0.2s both;
-    }
-    
     .section-title {
         font-size: 2.5rem;
         font-weight: 700;
-        color: var(--dark-text);
+        color: #2d3748;
         margin-bottom: 1rem;
     }
     
     .section-subtitle {
         font-size: 1.1rem;
-        color: var(--muted-text);
+        color: #718096;
         margin-bottom: 2rem;
     }
     
@@ -325,7 +268,7 @@
     }
     
     .feature-icon i {
-        background: linear-gradient(135deg, var(--primary-color), var(--success-color));
+        background: linear-gradient(135deg, #667eea, #48bb78);
         background-clip: text;
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
@@ -339,12 +282,12 @@
     .feature-title {
         font-size: 1.5rem;
         font-weight: 600;
-        color: var(--dark-text);
+        color: #2d3748;
         margin-bottom: 1rem;
     }
     
     .feature-description {
-        color: var(--muted-text);
+        color: #718096;
         margin-bottom: 1.5rem;
         line-height: 1.6;
     }
@@ -358,7 +301,7 @@
     
     .stat-badge {
         background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(72, 187, 120, 0.1));
-        color: var(--primary-color);
+        color: #667eea;
         padding: 0.25rem 0.75rem;
         border-radius: 15px;
         font-size: 0.875rem;
@@ -366,10 +309,6 @@
     }
     
     /* Stats Section */
-    .stats-section {
-        animation: fadeInUp 0.8s ease 0.4s both;
-    }
-    
     .stats-card {
         background: rgba(255, 255, 255, 0.9);
         border-radius: 20px;
@@ -385,7 +324,7 @@
     .stat-number {
         font-size: 2.5rem;
         font-weight: 700;
-        background: linear-gradient(135deg, var(--primary-color), var(--success-color));
+        background: linear-gradient(135deg, #667eea, #48bb78);
         background-clip: text;
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
@@ -393,16 +332,12 @@
     }
     
     .stat-label {
-        color: var(--muted-text);
+        color: #718096;
         font-weight: 500;
         font-size: 0.9rem;
     }
     
     /* CTA Section */
-    .cta-section {
-        animation: fadeInUp 0.8s ease 0.6s both;
-    }
-    
     .cta-card {
         background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(72, 187, 120, 0.1));
         border-radius: 20px;
@@ -413,13 +348,13 @@
     .cta-title {
         font-size: 2rem;
         font-weight: 700;
-        color: var(--dark-text);
+        color: #2d3748;
         margin-bottom: 1rem;
     }
     
     .cta-description {
         font-size: 1.1rem;
-        color: var(--muted-text);
+        color: #718096;
         margin-bottom: 2rem;
     }
     
@@ -430,26 +365,6 @@
         border-radius: 12px;
         font-weight: 600;
         transition: all 0.3s ease;
-        position: relative;
-        overflow: hidden;
-    }
-    
-    .action-buttons .btn::before {
-        content: '';
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        width: 0;
-        height: 0;
-        background: rgba(255, 255, 255, 0.2);
-        border-radius: 50%;
-        transform: translate(-50%, -50%);
-        transition: width 0.4s ease, height 0.4s ease;
-    }
-    
-    .action-buttons .btn:hover::before {
-        width: 300px;
-        height: 300px;
     }
     
     .action-buttons .btn:hover {
@@ -462,17 +377,6 @@
         from {
             opacity: 0;
             transform: translateY(30px);
-        }
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
-    }
-    
-    @keyframes slideInUp {
-        from {
-            opacity: 0;
-            transform: translateY(50px);
         }
         to {
             opacity: 1;
@@ -530,80 +434,7 @@
         .feature-card {
             margin-bottom: 2rem;
         }
-        
-        .floating-books {
-            display: none;
-        }
     }
 </style>
-
-<!-- Enhanced JavaScript -->
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    // Animate numbers if user is authenticated
-    {% if request.user.is_authenticated %}
-    animateStats();
-    {% endif %}
-    
-    // Staggered animation for feature cards
-    const featureCards = document.querySelectorAll('.feature-card');
-    featureCards.forEach((card, index) => {
-        card.style.animationDelay = (index * 0.1) + 's';
-        card.style.animation = 'fadeInUp 0.6s ease both';
-    });
-    
-    function animateStats() {
-        // Simulated stats - replace with actual data
-        animateNumber('totalBooks', 0, 42, 2000);
-        animateNumber('readBooks', 0, 28, 2000);
-        animateNumber('currentBooks', 0, 3, 2000);
-        animateNumber('totalArticles', 0, 15, 2000);
-    }
-    
-    function animateNumber(elementId, start, end, duration) {
-        const element = document.getElementById(elementId);
-        if (!element) return;
-        
-        const startTime = performance.now();
-        
-        function updateNumber(currentTime) {
-            const elapsed = currentTime - startTime;
-            const progress = Math.min(elapsed / duration, 1);
-            
-            const currentNumber = Math.floor(start + (end - start) * easeOutQuart(progress));
-            element.textContent = currentNumber;
-            
-            if (progress < 1) {
-                requestAnimationFrame(updateNumber);
-            }
-        }
-        
-        requestAnimationFrame(updateNumber);
-    }
-    
-    function easeOutQuart(t) {
-        return 1 - Math.pow(1 - t, 4);
-    }
-    
-    // Intersection Observer for animations
-    const observerOptions = {
-        threshold: 0.1,
-        rootMargin: '0px 0px -50px 0px'
-    };
-    
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.style.animationPlayState = 'running';
-            }
-        });
-    }, observerOptions);
-    
-    // Observe sections
-    document.querySelectorAll('.features-section, .stats-section, .cta-section').forEach(section => {
-        observer.observe(section);
-    });
-});
-</script>
 
 {% endblock body %}
