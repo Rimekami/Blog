@@ -11,4 +11,9 @@ urlpatterns = [
     path('<int:pk>/edit/', views.BookUpdateView.as_view(), name='edit'),
     path('<int:pk>/delete/', views.BookDeleteView.as_view(), name='delete'),
     path('<int:pk>/update-status/', views.update_book_status, name='update_status'),
+    
+    # API endpoints
+    path('api/search/', views.search_books_api, name='api_search'),
+    path('api/isbn/', views.get_book_by_isbn_api, name='api_isbn'),
+    path('api/title-author/', views.search_by_title_author_api, name='api_title_author'),
 ]

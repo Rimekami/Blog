@@ -4,8 +4,11 @@ from django.views.generic import ListView, DetailView, CreateView, UpdateView, D
 from django.contrib import messages
 from django.urls import reverse_lazy
 from django.http import JsonResponse
+from django.views.decorators.http import require_http_methods
 from .models import Book
 from .forms import BookForm
+from .utils import GoogleBooksAPI, format_book_info_for_form
+import json
 
 class BookListView(ListView):
     model = Book
@@ -104,3 +107,80 @@ def update_book_status(request, pk):
             })
     
     return JsonResponse({'success': False})
+
+@require_http_methods(["GET"])
+def search_books_api(request):
+    """Google Books API'den kitap ara"""
+    query = request.GET.get('q', '').strip()
+    
+    if not query:
+        return JsonResponse({'success': False, 'error': 'Arama terimi gerekli'})
+    
+    if len(query) < 2:
+        return JsonResponse({'success': False, 'error': 'En az 2 karakter girin'})
+    
+    try:
+        books = GoogleBooksAPI.search_books(query, max_results=8)
+        return JsonResponse({
+            'success': True, 
+            'books': books,
+            'count': len(books)
+        })
+    except Exception as e:
+        return JsonResponse({'success': False, 'error': str(e)})
+
+@require_http_methods(["GET"])
+def get_book_by_isbn_api(request):
+    """ISBN ile kitap bilgisi getir"""
+    isbn = request.GET.get('isbn', '').strip()
+    
+    if not isbn:
+        return JsonResponse({'success': False, 'error': 'ISBN gerekli'})
+    
+    try:
+        book_info = GoogleBooksAPI.get_book_by_isbn(isbn)
+        
+        if book_info:
+            # Form için uygun formata çevir
+            form_data = format_book_info_for_form(book_info)
+            return JsonResponse({
+                'success': True, 
+                'book': form_data
+            })
+        else:
+            return JsonResponse({
+                'success': False, 
+                'error': 'Bu ISBN ile kitap bulunamadı'
+            })
+            
+    except Exception as e:
+        return JsonResponse({'success': False, 'error': str(e)})
+
+@require_http_methods(["GET"])
+def search_by_title_author_api(request):
+    """Başlık ve yazar ile kitap ara"""
+    title = request.GET.get('title', '').strip()
+    author = request.GET.get('author', '').strip()
+    
+    if not title:
+        return JsonResponse({'success': False, 'error': 'Kitap başlığı gerekli'})
+    
+    try:
+        books = GoogleBooksAPI.search_by_title_author(title, author)
+        
+        if books:
+            # İlk sonucu döndür (en alakalı)
+            form_data = format_book_info_for_form(books[0])
+            return JsonResponse({
+                'success': True, 
+                'book': form_data,
+                'alternatives': books[1:3]  # Alternatif seçenekler
+            })
+        else:
+            return JsonResponse({
+                'success': False, 
+                'error': 'Bu bilgilerle kitap bulunamadı'
+            })
+            
+    except Exception as e:
+        return JsonResponse({'success': False, 'error': str(e)})

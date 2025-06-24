@@ -1,0 +1,82 @@
+{% extends 'layout.html' %}
+
+{% block body %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card border-danger">
+            <div class="card-header bg-danger text-white">
+                <h4 class="mb-0">🗑️ Kitap Silme Onayı</h4>
+            </div>
+            
+            <div class="card-body text-center">
+                <!-- Kitap Bilgileri -->
+                <div class="mb-4">
+                    {% if book.cover_image %}
+                        <img src="{{ book.cover_image }}" class="img-thumbnail" 
+                             alt="{{ book.title }}" style="max-height: 150px;">
+                    {% else %}
+                        <div class="bg-light rounded d-inline-flex align-items-center justify-content-center" 
+                             style="width: 100px; height: 150px;">
+                            <i class="fas fa-book fa-3x text-muted"></i>
+                        </div>
+                    {% endif %}
+                </div>
+                
+                <h5 class="card-title">{{ book.title }}</h5>
+                <p class="card-text text-muted">{{ book.author }}</p>
+                
+                <!-- Durum Badge -->
+                {% if book.status == 'to_read' %}
+                    <span class="badge badge-secondary">Okunacak</span>
+                {% elif book.status == 'reading' %}
+                    <span class="badge badge-warning">Okunuyor</span>
+                {% elif book.status == 'read' %}
+                    <span class="badge badge-success">Okundu</span>
+                {% endif %}
+                
+                <hr>
+                
+                <!-- Uyarı Mesajı -->
+                <div class="alert alert-warning">
+                    <strong>⚠️ Dikkat!</strong><br>
+                    Bu kitabı silmek üzeresiniz. Bu işlem geri alınamaz!
+                    Tüm kitap bilgileri, notlarınız ve değerlendirmeniz silinecek.
+                </div>
+                
+                <!-- Silme Formu -->
+                <form method="post" class="d-inline">
+                    {% csrf_token %}
+                    <div class="btn-group" role="group">
+                        <a href="{% url 'books:detail' book.pk %}" class="btn btn-secondary">
+                            ❌ İptal Et
+                        </a>
+                        <a href="{% url 'books:list' %}" class="btn btn-info">
+                            📚 Listeye Dön
+                        </a>
+                        <button type="submit" class="btn btn-danger">
+                            🗑️ Evet, Sil
+                        </button>
+                    </div>
+                </form>
+            </div>
+            
+            <!-- Son Bilgiler -->
+            <div class="card-footer text-muted small">
+                <div class="row">
+                    <div class="col-6">
+                        <strong>Eklenme:</strong> {{ book.added_date|date:"d.m.Y" }}
+                    </div>
+                    {% if book.rating %}
+                    <div class="col-6">
+                        <strong>Puanınız:</strong> 
+                        {% for i in "12345" %}
+                            {% if forloop.counter <= book.rating %}⭐{% endif %}
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock body %}

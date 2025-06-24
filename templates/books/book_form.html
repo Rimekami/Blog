@@ -15,6 +15,54 @@
             </div>
             
             <div class="card-body">
+                <!-- API Yardımcı Butonları -->
+                <div class="row mb-4">
+                    <div class="col-12">
+                        <div class="card bg-light">
+                            <div class="card-body">
+                                <h6 class="card-title">🔍 Kitap Bilgilerini Otomatik Doldur</h6>
+                                
+                                <!-- ISBN ile Arama -->
+                                <div class="row mb-2">
+                                    <div class="col-md-8">
+                                        <input type="text" id="isbn-search" class="form-control" 
+                                               placeholder="ISBN girin (örn: 9786053754008)">
+                                    </div>
+                                    <div class="col-md-4">
+                                        <button type="button" id="search-by-isbn" class="btn btn-info btn-block">
+                                            📚 ISBN ile Doldur
+                                        </button>
+                                    </div>
+                                </div>
+                                
+                                <!-- Başlık/Yazar ile Arama -->
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <input type="text" id="quick-title" class="form-control" 
+                                               placeholder="Kitap başlığı">
+                                    </div>
+                                    <div class="col-md-4">
+                                        <input type="text" id="quick-author" class="form-control" 
+                                               placeholder="Yazar (opsiyonel)">
+                                    </div>
+                                    <div class="col-md-4">
+                                        <button type="button" id="search-by-title" class="btn btn-success btn-block">
+                                            ✍️ Başlık ile Doldur
+                                        </button>
+                                    </div>
+                                </div>
+                                
+                                <!-- Loading ve Status -->
+                                <div id="api-status" class="mt-2" style="display: none;">
+                                    <div class="alert alert-info">
+                                        <i class="fas fa-spinner fa-spin"></i> Kitap bilgileri getiriliyor...
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
                 <form method="post">
                     {% csrf_token %}
                     
@@ -201,11 +249,138 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    // Durum değişikliği ile tarih otomatiği
+    // Form elemanları
+    const titleField = document.getElementById('id_title');
+    const authorField = document.getElementById('id_author');
+    const descriptionField = document.getElementById('id_description');
+    const pageCountField = document.getElementById('id_page_count');
+    const isbnField = document.getElementById('id_isbn');
+    const coverImageField = document.getElementById('id_cover_image');
+    const ratingField = document.getElementById('id_rating');
     const statusField = document.getElementById('id_status');
     const startDateField = document.getElementById('id_start_date');
     const finishDateField = document.getElementById('id_finish_date');
     
+    // API arama elemanları
+    const isbnSearchField = document.getElementById('isbn-search');
+    const quickTitleField = document.getElementById('quick-title');
+    const quickAuthorField = document.getElementById('quick-author');
+    const searchByIsbnBtn = document.getElementById('search-by-isbn');
+    const searchByTitleBtn = document.getElementById('search-by-title');
+    const apiStatus = document.getElementById('api-status');
+    
+    // API Status göster/gizle
+    function showApiStatus(message, type = 'info') {
+        apiStatus.style.display = 'block';
+        apiStatus.innerHTML = `<div class="alert alert-${type}"><i class="fas fa-${type === 'info' ? 'spinner fa-spin' : type === 'success' ? 'check' : 'exclamation-triangle'}"></i> ${message}</div>`;
+        
+        if (type !== 'info') {
+            setTimeout(() => {
+                apiStatus.style.display = 'none';
+            }, 3000);
+        }
+    }
+    
+    function hideApiStatus() {
+        apiStatus.style.display = 'none';
+    }
+    
+    // Form alanlarını doldur
+    function fillFormFields(bookData) {
+        if (bookData.title) titleField.value = bookData.title;
+        if (bookData.author) authorField.value = bookData.author;
+        if (bookData.description) descriptionField.value = bookData.description;
+        if (bookData.page_count) pageCountField.value = bookData.page_count;
+        if (bookData.isbn) isbnField.value = bookData.isbn;
+        if (bookData.cover_image) coverImageField.value = bookData.cover_image;
+        if (bookData.rating) ratingField.value = bookData.rating;
+    }
+    
+    // ISBN ile arama
+    searchByIsbnBtn.addEventListener('click', function() {
+        const isbn = isbnSearchField.value.trim();
+        
+        if (!isbn) {
+            alert('Lütfen bir ISBN girin');
+            return;
+        }
+        
+        showApiStatus('ISBN ile kitap aranıyor...');
+        
+        fetch(`/books/api/isbn/?isbn=${encodeURIComponent(isbn)}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    fillFormFields(data.book);
+                    showApiStatus('Kitap bilgileri başarıyla getirildi!', 'success');
+                    isbnSearchField.value = ''; // Temizle
+                } else {
+                    showApiStatus(data.error || 'Kitap bulunamadı', 'danger');
+                }
+            })
+            .catch(error => {
+                console.error('Hata:', error);
+                showApiStatus('Bir hata oluştu. Lütfen tekrar deneyin.', 'danger');
+            });
+    });
+    
+    // Başlık/Yazar ile arama
+    searchByTitleBtn.addEventListener('click', function() {
+        const title = quickTitleField.value.trim();
+        const author = quickAuthorField.value.trim();
+        
+        if (!title) {
+            alert('Lütfen en az kitap başlığını girin');
+            return;
+        }
+        
+        showApiStatus('Kitap bilgileri aranıyor...');
+        
+        const params = new URLSearchParams();
+        params.append('title', title);
+        if (author) params.append('author', author);
+        
+        fetch(`/books/api/title-author/?${params}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    fillFormFields(data.book);
+                    showApiStatus('Kitap bilgileri başarıyla getirildi!', 'success');
+                    quickTitleField.value = ''; // Temizle
+                    quickAuthorField.value = '';
+                } else {
+                    showApiStatus(data.error || 'Kitap bulunamadı', 'danger');
+                }
+            })
+            .catch(error => {
+                console.error('Hata:', error);
+                showApiStatus('Bir hata oluştu. Lütfen tekrar deneyin.', 'danger');
+            });
+    });
+    
+    // Enter tuşu ile arama
+    isbnSearchField.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            searchByIsbnBtn.click();
+        }
+    });
+    
+    quickTitleField.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            searchByTitleBtn.click();
+        }
+    });
+    
+    quickAuthorField.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            searchByTitleBtn.click();
+        }
+    });
+    
+    // Durum değişikliği ile tarih otomatiği (mevcut kod)
     if (statusField) {
         statusField.addEventListener('change', function() {
             const today = new Date().toISOString().split('T')[0];
