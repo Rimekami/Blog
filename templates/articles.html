@@ -1,87 +1,679 @@
 {% extends "layout.html" %}
-
 {% block body %}
 
-<div class ="row">
-    
-        <div class="col-md-10 offset-md-3">
+<!-- Articles Header -->
+<div class="articles-header">
+    <div class="container">
+        <div class="row justify-content-center">
             <div class="col-lg-8">
-                <h3>Makaleler</h3>
-                <hr>
+                <div class="header-content text-center">
+                    <div class="header-icon mb-3">
+                        <i class="fas fa-newspaper fa-4x"></i>
+                    </div>
+                    <h1 class="articles-title">📰 Makaleler</h1>
+                    <p class="articles-subtitle">
+                        Kitap dünyasından güncel yazılar, incelemeler ve deneyimler
+                    </p>
                 </div>
+            </div>
         </div>
-</div>
-<div class ="row">
-    <div class="col-md-10 offset-md-3">
-        <div class="col-lg-8">
-            <form>
-                 {% csrf_token %} 
-                <input type="text" name = "keyword" class="input-sm" maxlength="64" placeholder="Ara...">
-              <button type="submit" class="btn btn-danger">Ara</button>
-            </form>
-      </div>
     </div>
-
 </div>
 
-
-{% if articles %}
-
-{% for article in articles %}
-<div class="row">
-    <div class="col-md-10 offset-md-3">
-
-    <!-- Post Content Column -->
-    <div class="col-lg-8">
-
-      <!-- Title -->
-      <a href="{% url 'article:detail' article.id %}"><h2 class="mt-4">{{article.title}}</h2></a> 
-        
-      <!-- Author -->
-      <p class="lead">
-        
-        {{article.author.username}} tarafından yayınlandı
-      </p>
-
-      <hr>
-
-      <!-- Date/Time -->
-      <p>{{article.created_date}}</p>
-      <hr>
-      <!-- Preview Image -->
-      {% if article.article_image %}
-      <a href="{% url 'article:detail' article.id %}"><img class="img-fluid rounded" src="{{article.article_image.url}}" alt=""></a>
-      {% endif %}
-     
-
-      <hr>
-
-      <!-- Post Content -->
-      <p class="lead">
-          {{article.content|safe|truncatewords:50}}
-      </p>
-
-      <a style ="float : right;" href="{% url 'article:detail' article.id %}" class ="btn btn-danger">Devamını Oku</a>
-      <hr>
-         
+<!-- Search Section -->
+<div class="search-section">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-6 col-md-8">
+                <form class="search-form" method="get">
+                    {% csrf_token %}
+                    <div class="search-box">
+                        <input type="text" 
+                               name="keyword" 
+                               class="form-control search-input" 
+                               placeholder="Makale ara..."
+                               value="{{ request.GET.keyword }}"
+                               maxlength="64">
+                        <button type="submit" class="search-btn">
+                            <i class="fas fa-search"></i>
+                        </button>
+                    </div>
+                    <div class="search-suggestions">
+                        <small class="text-muted">
+                            Popüler: <span class="suggestion-tag">kitap inceleme</span>
+                            <span class="suggestion-tag">okuma tavsiyeleri</span>
+                            <span class="suggestion-tag">yazar röportajı</span>
+                        </small>
+                    </div>
+                </form>
+            </div>
         </div>
-      </div>
-      </div>
+    </div>
+</div>
 
-{% endfor %}
+<!-- Articles Content -->
+<div class="articles-content">
+    <div class="container">
+        {% if articles %}
+            <div class="articles-grid">
+                {% for article in articles %}
+                    <article class="article-card">
+                        <!-- Article Image -->
+                        <div class="article-image-container">
+                            {% if article.article_image %}
+                                <a href="{% url 'article:detail' article.id %}" class="image-link">
+                                    <img src="{{ article.article_image.url }}" 
+                                         alt="{{ article.title }}" 
+                                         class="article-image">
+                                    <div class="image-overlay">
+                                        <i class="fas fa-eye fa-2x"></i>
+                                    </div>
+                                </a>
+                            {% else %}
+                                <div class="article-placeholder">
+                                    <i class="fas fa-file-alt fa-3x"></i>
+                                </div>
+                            {% endif %}
+                            
+                            <!-- Article Category Badge -->
+                            <div class="category-badge">
+                                <i class="fas fa-tag me-1"></i>
+                                Makale
+                            </div>
+                        </div>
+                        
+                        <!-- Article Content -->
+                        <div class="article-content">
+                            <!-- Article Meta -->
+                            <div class="article-meta">
+                                <div class="author-info">
+                                    <div class="author-avatar">
+                                        {{ article.author.username|first|upper }}
+                                    </div>
+                                    <span class="author-name">{{ article.author.username }}</span>
+                                </div>
+                                <div class="article-date">
+                                    <i class="fas fa-calendar-alt me-1"></i>
+                                    {{ article.created_date|date:"d M Y" }}
+                                </div>
+                            </div>
+                            
+                            <!-- Article Title -->
+                            <h2 class="article-title">
+                                <a href="{% url 'article:detail' article.id %}">
+                                    {{ article.title }}
+                                </a>
+                            </h2>
+                            
+                            <!-- Article Excerpt -->
+                            <p class="article-excerpt">
+                                {{ article.content|striptags|truncatewords:25 }}
+                            </p>
+                            
+                            <!-- Article Stats -->
+                            <div class="article-stats">
+                                <div class="stats-left">
+                                    <span class="stat-item">
+                                        <i class="fas fa-eye text-primary"></i>
+                                        <span>234</span>
+                                    </span>
+                                    <span class="stat-item">
+                                        <i class="fas fa-comments text-success"></i>
+                                        <span>12</span>
+                                    </span>
+                                    <span class="stat-item">
+                                        <i class="fas fa-heart text-danger"></i>
+                                        <span>45</span>
+                                    </span>
+                                </div>
+                                <div class="reading-time">
+                                    <i class="fas fa-clock me-1"></i>
+                                    5 dk okuma
+                                </div>
+                            </div>
+                            
+                            <!-- Read More Button -->
+                            <div class="article-actions">
+                                <a href="{% url 'article:detail' article.id %}" class="read-more-btn">
+                                    Devamını Oku
+                                    <i class="fas fa-arrow-right ms-2"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </article>
+                {% endfor %}
+            </div>
+            
+            <!-- Load More Section -->
+            <div class="load-more-section text-center">
+                <button class="btn btn-outline-primary btn-lg load-more-btn">
+                    <i class="fas fa-plus me-2"></i>
+                    Daha Fazla Makale Yükle
+                </button>
+            </div>
+            
+        {% else %}
+            <!-- Empty State -->
+            <div class="empty-state">
+                <div class="empty-icon">
+                    <i class="fas fa-search fa-5x text-muted"></i>
+                </div>
+                <h3 class="empty-title">
+                    {% if request.GET.keyword %}
+                        "{{ request.GET.keyword }}" için sonuç bulunamadı
+                    {% else %}
+                        Henüz makale yok
+                    {% endif %}
+                </h3>
+                <p class="empty-description">
+                    {% if request.GET.keyword %}
+                        Farklı anahtar kelimeler deneyin veya tüm makaleleri görüntüleyin.
+                    {% else %}
+                        İlk makale yayınlandığında burada görünecek.
+                    {% endif %}
+                </p>
+                <div class="empty-actions">
+                    {% if request.GET.keyword %}
+                        <a href="{% url 'article:articles' %}" class="btn btn-primary">
+                            <i class="fas fa-list me-2"></i>
+                            Tüm Makaleleri Gör
+                        </a>
+                    {% endif %}
+                    <a href="{% url 'article:addarticle' %}" class="btn btn-success">
+                        <i class="fas fa-pen me-2"></i>
+                        İlk Makaleyi Yaz
+                    </a>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+</div>
 
-
-{% else %}
-<div class ="row">
+<style>
+    /* Articles Header */
+    .articles-header {
+        background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(72, 187, 120, 0.1));
+        border-radius: 20px;
+        padding: 3rem 0;
+        margin-bottom: 2rem;
+        animation: fadeInUp 0.6s ease;
+    }
     
-    <div class="col-md-10 offset-md-3">
-        <div class="col-lg-8">
-<div class = "alert alert-danger">
-   Makale Bulunamadı
-</div>
-</div>
-</div>
-</div>
-{% endif %}
+    .header-icon i {
+        background: linear-gradient(135deg, #667eea, #48bb78);
+        background-clip: text;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        animation: bounceIn 1s ease;
+    }
+    
+    .articles-title {
+        font-size: 3rem;
+        font-weight: 700;
+        color: #2d3748;
+        margin-bottom: 1rem;
+        background: linear-gradient(135deg, #667eea, #48bb78);
+        background-clip: text;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+    
+    .articles-subtitle {
+        font-size: 1.2rem;
+        color: #718096;
+        margin-bottom: 0;
+    }
+    
+    /* Search Section */
+    .search-section {
+        margin-bottom: 3rem;
+        animation: fadeInUp 0.6s ease 0.2s both;
+    }
+    
+    .search-box {
+        position: relative;
+        display: flex;
+        background: rgba(255, 255, 255, 0.9);
+        border-radius: 25px;
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        backdrop-filter: blur(10px);
+        overflow: hidden;
+    }
+    
+    .search-input {
+        border: none;
+        background: transparent;
+        padding: 1rem 1.5rem;
+        font-size: 1.1rem;
+        flex: 1;
+    }
+    
+    .search-input:focus {
+        outline: none;
+        box-shadow: none;
+    }
+    
+    .search-btn {
+        background: linear-gradient(135deg, #667eea, #48bb78);
+        border: none;
+        color: white;
+        padding: 1rem 2rem;
+        transition: all 0.3s ease;
+        cursor: pointer;
+    }
+    
+    .search-btn:hover {
+        transform: scale(1.05);
+        box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+    }
+    
+    .search-suggestions {
+        text-align: center;
+        margin-top: 1rem;
+    }
+    
+    .suggestion-tag {
+        background: rgba(102, 126, 234, 0.1);
+        color: #667eea;
+        padding: 0.25rem 0.75rem;
+        border-radius: 15px;
+        margin: 0 0.25rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+    
+    .suggestion-tag:hover {
+        background: #667eea;
+        color: white;
+    }
+    
+    /* Articles Grid */
+    .articles-content {
+        animation: fadeInUp 0.6s ease 0.4s both;
+    }
+    
+    .articles-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+        gap: 2rem;
+        margin-bottom: 3rem;
+    }
+    
+    /* Article Card */
+    .article-card {
+        background: rgba(255, 255, 255, 0.9);
+        border-radius: 20px;
+        overflow: hidden;
+        backdrop-filter: blur(10px);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease;
+        animation: fadeInUp 0.6s ease;
+    }
+    
+    .article-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+    }
+    
+    /* Article Image */
+    .article-image-container {
+        position: relative;
+        height: 250px;
+        overflow: hidden;
+    }
+    
+    .image-link {
+        display: block;
+        height: 100%;
+    }
+    
+    .article-image {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.3s ease;
+    }
+    
+    .article-card:hover .article-image {
+        transform: scale(1.05);
+    }
+    
+    .image-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.5);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+        color: white;
+    }
+    
+    .article-card:hover .image-overlay {
+        opacity: 1;
+    }
+    
+    .article-placeholder {
+        height: 100%;
+        background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(72, 187, 120, 0.1));
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #718096;
+    }
+    
+    .category-badge {
+        position: absolute;
+        top: 1rem;
+        left: 1rem;
+        background: rgba(102, 126, 234, 0.9);
+        color: white;
+        padding: 0.5rem 1rem;
+        border-radius: 15px;
+        font-size: 0.875rem;
+        font-weight: 500;
+        backdrop-filter: blur(10px);
+    }
+    
+    /* Article Content */
+    .article-content {
+        padding: 2rem;
+    }
+    
+    .article-meta {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1rem;
+    }
+    
+    .author-info {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    
+    .author-avatar {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #667eea, #48bb78);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-weight: bold;
+        font-size: 0.875rem;
+    }
+    
+    .author-name {
+        color: #4a5568;
+        font-weight: 500;
+        font-size: 0.9rem;
+    }
+    
+    .article-date {
+        color: #718096;
+        font-size: 0.875rem;
+    }
+    
+    .article-title {
+        font-size: 1.5rem;
+        font-weight: 600;
+        margin-bottom: 1rem;
+        line-height: 1.3;
+    }
+    
+    .article-title a {
+        color: #2d3748;
+        text-decoration: none;
+        transition: color 0.3s ease;
+    }
+    
+    .article-title a:hover {
+        color: #667eea;
+        text-decoration: none;
+    }
+    
+    .article-excerpt {
+        color: #4a5568;
+        line-height: 1.6;
+        margin-bottom: 1.5rem;
+        font-size: 1rem;
+    }
+    
+    /* Article Stats */
+    .article-stats {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1.5rem;
+        padding-top: 1rem;
+        border-top: 1px solid #e2e8f0;
+    }
+    
+    .stats-left {
+        display: flex;
+        gap: 1rem;
+    }
+    
+    .stat-item {
+        display: flex;
+        align-items: center;
+        gap: 0.25rem;
+        color: #718096;
+        font-size: 0.875rem;
+    }
+    
+    .reading-time {
+        color: #718096;
+        font-size: 0.875rem;
+    }
+    
+    /* Read More Button */
+    .article-actions {
+        text-align: center;
+    }
+    
+    .read-more-btn {
+        background: linear-gradient(135deg, #667eea, #48bb78);
+        color: white;
+        padding: 0.75rem 2rem;
+        border-radius: 25px;
+        text-decoration: none;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+    }
+    
+    .read-more-btn:hover {
+        color: white;
+        text-decoration: none;
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+    }
+    
+    /* Load More */
+    .load-more-section {
+        animation: fadeInUp 0.6s ease 0.8s both;
+    }
+    
+    .load-more-btn {
+        border-radius: 25px;
+        padding: 1rem 3rem;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+    
+    .load-more-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+    }
+    
+    /* Empty State */
+    .empty-state {
+        text-align: center;
+        padding: 4rem 2rem;
+        animation: fadeInUp 0.6s ease;
+    }
+    
+    .empty-icon {
+        margin-bottom: 2rem;
+        opacity: 0.5;
+    }
+    
+    .empty-title {
+        color: #2d3748;
+        font-weight: 600;
+        margin-bottom: 1rem;
+        font-size: 1.8rem;
+    }
+    
+    .empty-description {
+        color: #718096;
+        font-size: 1.1rem;
+        margin-bottom: 2rem;
+        max-width: 500px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+    
+    .empty-actions {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+    
+    .empty-actions .btn {
+        border-radius: 25px;
+        padding: 0.75rem 2rem;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+    
+    .empty-actions .btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+    }
+    
+    /* Animations */
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    @keyframes bounceIn {
+        0% {
+            opacity: 0;
+            transform: scale(0.3);
+        }
+        50% {
+            opacity: 1;
+            transform: scale(1.05);
+        }
+        70% {
+            transform: scale(0.9);
+        }
+        100% {
+            opacity: 1;
+            transform: scale(1);
+        }
+    }
+    
+    /* Responsive */
+    @media (max-width: 768px) {
+        .articles-title {
+            font-size: 2.5rem;
+        }
+        
+        .articles-grid {
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+        }
+        
+        .article-content {
+            padding: 1.5rem;
+        }
+        
+        .article-meta {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 0.5rem;
+        }
+        
+        .article-stats {
+            flex-direction: column;
+            gap: 1rem;
+            align-items: flex-start;
+        }
+        
+        .empty-actions {
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .empty-actions .btn {
+            width: 100%;
+            max-width: 300px;
+        }
+        
+        .search-box {
+            flex-direction: column;
+        }
+        
+        .search-btn {
+            border-radius: 0 0 25px 25px;
+        }
+    }
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Search suggestions functionality
+    const suggestions = document.querySelectorAll('.suggestion-tag');
+    const searchInput = document.querySelector('.search-input');
+    
+    suggestions.forEach(suggestion => {
+        suggestion.addEventListener('click', function() {
+            searchInput.value = this.textContent.trim();
+            searchInput.focus();
+        });
+    });
+    
+    // Staggered animation for article cards
+    const articleCards = document.querySelectorAll('.article-card');
+    articleCards.forEach((card, index) => {
+        card.style.animationDelay = (index * 0.1) + 's';
+    });
+    
+    // Load more functionality (simulated)
+    const loadMoreBtn = document.querySelector('.load-more-btn');
+    if (loadMoreBtn) {
+        loadMoreBtn.addEventListener('click', function() {
+            this.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Yükleniyor...';
+            this.disabled = true;
+            
+            // Simulate loading
+            setTimeout(() => {
+                this.innerHTML = '<i class="fas fa-check me-2"></i>Tüm Makaleler Yüklendi';
+                this.classList.remove('btn-outline-primary');
+                this.classList.add('btn-success');
+            }, 2000);
+        });
+    }
+});
+</script>
 
 {% endblock body %}
