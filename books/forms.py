@@ -21,7 +21,7 @@ class BookForm(forms.ModelForm):
                 'placeholder': 'Yazar adını girin'
             }),
             'status': forms.Select(attrs={
-                'class': 'form-select'
+                'class': 'form-control'
             }),
             'description': forms.Textarea(attrs={
                 'class': 'form-control',
@@ -49,7 +49,7 @@ class BookForm(forms.ModelForm):
                 'type': 'date'
             }),
             'rating': forms.Select(attrs={
-                'class': 'form-select'
+                'class': 'form-control'
             }),
             'review': forms.Textarea(attrs={
                 'class': 'form-control',

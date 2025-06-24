@@ -1,0 +1,239 @@
+<!-- books/templates/books/book_form.html -->
+{% extends 'layout.html' %}
+{% load static %}
+
+{% block title %}
+    {% if object %}Kitap Düzenle{% else %}Kitap Ekle{% endif %}
+{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="mb-0">
+                        {% if object %}
+                            📝 "{{ object.title }}" Kitabını Düzenle
+                        {% else %}
+                            📚 Yeni Kitap Ekle
+                        {% endif %}
+                    </h4>
+                </div>
+                
+                <div class="card-body">
+                    <form method="post">
+                        {% csrf_token %}
+                        
+                        <!-- Temel Bilgiler -->
+                        <div class="form-row">
+                            <div class="form-group col-md-8">
+                                <label for="{{ form.title.id_for_label }}" class="font-weight-bold">
+                                    {{ form.title.label }} <span class="text-danger">*</span>
+                                </label>
+                                {{ form.title }}
+                                {% if form.title.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {{ form.title.errors.0 }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            
+                            <div class="form-group col-md-4">
+                                <label for="{{ form.status.id_for_label }}" class="font-weight-bold">
+                                    {{ form.status.label }}
+                                </label>
+                                {{ form.status }}
+                                {% if form.status.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {{ form.status.errors.0 }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <label for="{{ form.author.id_for_label }}" class="font-weight-bold">
+                                    {{ form.author.label }} <span class="text-danger">*</span>
+                                </label>
+                                {{ form.author }}
+                                {% if form.author.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {{ form.author.errors.0 }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            
+                            <div class="form-group col-md-3">
+                                <label for="{{ form.page_count.id_for_label }}" class="font-weight-bold">
+                                    {{ form.page_count.label }}
+                                </label>
+                                {{ form.page_count }}
+                                {% if form.page_count.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {{ form.page_count.errors.0 }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            
+                            <div class="form-group col-md-3">
+                                <label for="{{ form.rating.id_for_label }}" class="font-weight-bold">
+                                    {{ form.rating.label }}
+                                </label>
+                                {{ form.rating }}
+                                {% if form.rating.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {{ form.rating.errors.0 }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        
+                        <!-- Açıklama -->
+                        <div class="form-group">
+                            <label for="{{ form.description.id_for_label }}" class="font-weight-bold">
+                                {{ form.description.label }}
+                            </label>
+                            {{ form.description }}
+                            {% if form.description.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {{ form.description.errors.0 }}
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <!-- Detay Bilgiler -->
+                        <hr>
+                        <h6 class="text-muted mb-3">📖 Detay Bilgiler</h6>
+                        
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <label for="{{ form.isbn.id_for_label }}" class="font-weight-bold">
+                                    {{ form.isbn.label }}
+                                </label>
+                                {{ form.isbn }}
+                                {% if form.isbn.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {{ form.isbn.errors.0 }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            
+                            <div class="form-group col-md-6">
+                                <label for="{{ form.cover_image.id_for_label }}" class="font-weight-bold">
+                                    {{ form.cover_image.label }}
+                                </label>
+                                {{ form.cover_image }}
+                                {% if form.cover_image.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {{ form.cover_image.errors.0 }}
+                                    </div>
+                                {% endif %}
+                                <small class="form-text text-muted">
+                                    Kitap kapağının URL'sini girin (örn: Google Books'tan)
+                                </small>
+                            </div>
+                        </div>
+                        
+                        <!-- Tarihler -->
+                        <hr>
+                        <h6 class="text-muted mb-3">📅 Okuma Tarihleri</h6>
+                        
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <label for="{{ form.start_date.id_for_label }}" class="font-weight-bold">
+                                    {{ form.start_date.label }}
+                                </label>
+                                {{ form.start_date }}
+                                {% if form.start_date.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {{ form.start_date.errors.0 }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            
+                            <div class="form-group col-md-6">
+                                <label for="{{ form.finish_date.id_for_label }}" class="font-weight-bold">
+                                    {{ form.finish_date.label }}
+                                </label>
+                                {{ form.finish_date }}
+                                {% if form.finish_date.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {{ form.finish_date.errors.0 }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        
+                        <!-- Değerlendirme -->
+                        <hr>
+                        <h6 class="text-muted mb-3">⭐ Değerlendirme</h6>
+                        
+                        <div class="form-group">
+                            <label for="{{ form.review.id_for_label }}" class="font-weight-bold">
+                                {{ form.review.label }}
+                            </label>
+                            {{ form.review }}
+                            {% if form.review.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {{ form.review.errors.0 }}
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <!-- Non-field errors -->
+                        {% if form.non_field_errors %}
+                            <div class="alert alert-danger">
+                                {{ form.non_field_errors }}
+                            </div>
+                        {% endif %}
+                        
+                        <!-- Butonlar -->
+                        <hr>
+                        <div class="d-flex justify-content-between">
+                            <a href="{% url 'books:list' %}" class="btn btn-secondary">
+                                <i class="fas fa-arrow-left"></i> Geri Dön
+                            </a>
+                            
+                            <div>
+                                {% if object %}
+                                    <a href="{% url 'books:detail' object.pk %}" class="btn btn-info mr-2">
+                                        <i class="fas fa-eye"></i> Görüntüle
+                                    </a>
+                                {% endif %}
+                                
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-save"></i>
+                                    {% if object %}Güncelle{% else %}Kaydet{% endif %}
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Durum değişikliği ile tarih otomatiği
+    const statusField = document.getElementById('id_status');
+    const startDateField = document.getElementById('id_start_date');
+    const finishDateField = document.getElementById('id_finish_date');
+    
+    if (statusField) {
+        statusField.addEventListener('change', function() {
+            const today = new Date().toISOString().split('T')[0];
+            
+            if (this.value === 'reading' && !startDateField.value) {
+                startDateField.value = today;
+            } else if (this.value === 'read' && !finishDateField.value) {
+                finishDateField.value = today;
+            }
+        });
+    }
+});
+</script>
+{% endblock %}
