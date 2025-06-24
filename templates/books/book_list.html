@@ -1,154 +1,138 @@
-<!-- books/templates/books/book_list.html -->
 {% extends 'layout.html' %}
-{% load static %}
 
-{% block title %}Kitaplarım{% endblock %}
-
-{% block content %}
-<div class="container mt-4">
-    <div class="row">
+{% block body %}
+    <!-- Başlık ve Ekle Butonu -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>📚 Kitaplarım</h1>
+        <a href="{% url 'books:add' %}" class="btn btn-primary">
+            ➕ Kitap Ekle
+        </a>
+    </div>
+    
+    <!-- Durum Filtreleri -->
+    <div class="row mb-3">
         <div class="col-12">
-            <div class="d-flex justify-content-between align-items-center mb-4">
-                <h1>📚 Kitaplarım</h1>
-                <a href="{% url 'books:add' %}" class="btn btn-primary">
-                    <i class="fas fa-plus"></i> Kitap Ekle
+            <div class="btn-group btn-group-sm w-100" role="group">
+                <a href="?status=" class="btn {% if not status_filter %}btn-primary{% else %}btn-outline-primary{% endif %}">
+                    Tümü
+                </a>
+                <a href="?status=to_read" class="btn {% if status_filter == 'to_read' %}btn-secondary{% else %}btn-outline-secondary{% endif %}">
+                    Okunacak
+                </a>
+                <a href="?status=reading" class="btn {% if status_filter == 'reading' %}btn-warning{% else %}btn-outline-warning{% endif %}">
+                    Okunuyor
+                </a>
+                <a href="?status=read" class="btn {% if status_filter == 'read' %}btn-success{% else %}btn-outline-success{% endif %}">
+                    Okundu
                 </a>
             </div>
-            
-            <!-- Filtreler -->
-            <div class="row mb-4">
-                <div class="col-md-8">
-                    <form method="get" class="d-flex gap-2">
-                        <input type="text" name="search" class="form-control" 
-                               placeholder="Kitap adı veya yazar ara..." 
-                               value="{{ search_query }}">
+        </div>
+    </div>
+    
+    <!-- Arama Formu -->
+    <div class="row mb-4">
+        <div class="col-md-8">
+            <form method="get" class="form-inline">
+                <div class="input-group w-100">
+                    <input type="text" name="search" class="form-control" 
+                           placeholder="Kitap adı veya yazar ara..." 
+                           value="{{ search_query }}">
+                    <div class="input-group-append">
                         <button type="submit" class="btn btn-outline-primary">Ara</button>
-                    </form>
-                </div>
-                <div class="col-md-4">
-                    <div class="btn-group btn-group-sm w-100" role="group">
-                        <a href="?status=" class="btn {% if not status_filter %}btn-primary{% else %}btn-outline-primary{% endif %}">
-                            Tümü ({{ status_counts.all }})
-                        </a>
-                        <a href="?status=to_read" class="btn {% if status_filter == 'to_read' %}btn-secondary{% else %}btn-outline-secondary{% endif %}">
-                            Okunacak ({{ status_counts.to_read }})
-                        </a>
-                        <a href="?status=reading" class="btn {% if status_filter == 'reading' %}btn-warning{% else %}btn-outline-warning{% endif %}">
-                            Okunuyor ({{ status_counts.reading }})
-                        </a>
-                        <a href="?status=read" class="btn {% if status_filter == 'read' %}btn-success{% else %}btn-outline-success{% endif %}">
-                            Okundu ({{ status_counts.read }})
-                        </a>
                     </div>
                 </div>
-            </div>
-            
-            <!-- Kitap Listesi -->
-            {% if books %}
-                <div class="row">
-                    {% for book in books %}
-                        <div class="col-md-6 col-lg-4 mb-4">
-                            <div class="card h-100">
-                                {% if book.cover_image %}
-                                    <img src="{{ book.cover_image }}" class="card-img-top" 
-                                         alt="{{ book.title }}" style="height: 250px; object-fit: cover;">
-                                {% else %}
-                                    <div class="card-img-top bg-light d-flex align-items-center justify-content-center" 
-                                         style="height: 250px;">
-                                        <i class="fas fa-book fa-4x text-muted"></i>
-                                    </div>
-                                {% endif %}
-                                
-                                <div class="card-body d-flex flex-column">
-                                    <h5 class="card-title">{{ book.title }}</h5>
-                                    <p class="card-text text-muted">{{ book.author }}</p>
-                                    
-                                    {% if book.description %}
-                                        <p class="card-text small">
-                                            {{ book.description|truncatewords:15 }}
-                                        </p>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Kitap Listesi -->
+    {% if books %}
+        <div class="row">
+            {% for book in books %}
+                <div class="col-md-6 col-lg-4 mb-4">
+                    <div class="card h-100">
+                        {% if book.cover_image %}
+                            <img src="{{ book.cover_image }}" class="card-img-top" 
+                                 alt="{{ book.title }}" style="height: 250px; object-fit: cover;">
+                        {% else %}
+                            <div class="card-img-top bg-light d-flex align-items-center justify-content-center" 
+                                 style="height: 250px;">
+                                <i class="fas fa-book fa-4x text-muted"></i>
+                            </div>
+                        {% endif %}
+                        
+                        <div class="card-body d-flex flex-column">
+                            <h5 class="card-title">{{ book.title }}</h5>
+                            <p class="card-text text-muted">{{ book.author }}</p>
+                            
+                            {% if book.description %}
+                                <p class="card-text small">
+                                    {{ book.description|truncatewords:15 }}
+                                </p>
+                            {% endif %}
+                            
+                            <div class="mt-auto">
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    {% if book.status == 'to_read' %}
+                                        <span class="badge badge-secondary">Okunacak</span>
+                                    {% elif book.status == 'reading' %}
+                                        <span class="badge badge-warning">Okunuyor</span>
+                                    {% elif book.status == 'read' %}
+                                        <span class="badge badge-success">Okundu</span>
                                     {% endif %}
                                     
-                                    <div class="mt-auto">
-                                        <div class="d-flex justify-content-between align-items-center mb-2">
-                                            <span class="badge bg-{{ book.get_status_display_with_color.color }}">
-                                                {{ book.get_status_display }}
-                                            </span>
-                                            {% if book.rating %}
-                                                <div class="text-warning">
-                                                    {% for i in "12345" %}
-                                                        {% if forloop.counter <= book.rating %}
-                                                            <i class="fas fa-star"></i>
-                                                        {% else %}
-                                                            <i class="far fa-star"></i>
-                                                        {% endif %}
-                                                    {% endfor %}
-                                                </div>
-                                            {% endif %}
+                                    {% if book.rating %}
+                                        <div class="text-warning">
+                                            {% for i in "12345" %}
+                                                {% if forloop.counter <= book.rating %}
+                                                    ⭐
+                                                {% else %}
+                                                    ☆
+                                                {% endif %}
+                                            {% endfor %}
                                         </div>
-                                        
-                                        <div class="btn-group w-100">
-                                            <a href="{% url 'books:detail' book.pk %}" class="btn btn-sm btn-outline-primary">
-                                                Detay
-                                            </a>
-                                            <a href="{% url 'books:edit' book.pk %}" class="btn btn-sm btn-outline-secondary">
-                                                Düzenle
-                                            </a>
-                                            <div class="btn-group btn-group-sm">
-                                                <button class="btn btn-sm btn-outline-info dropdown-toggle" type="button" 
-                                                        data-toggle="dropdown">
-                                                    Durum
-                                                </button>
-                                                <div class="dropdown-menu">
-                                                    <a class="dropdown-item status-update" href="#" 
-                                                           data-book-id="{{ book.pk }}" data-status="to_read">Okunacak</a>
-                                                    <a class="dropdown-item status-update" href="#" 
-                                                           data-book-id="{{ book.pk }}" data-status="reading">Okunuyor</a>
-                                                    <a class="dropdown-item status-update" href="#" 
-                                                           data-book-id="{{ book.pk }}" data-status="read">Okundu</a>
-                                                </div>
-                                            </div>
+                                    {% endif %}
+                                </div>
+                                
+                                <div class="btn-group btn-group-sm w-100">
+                                    <a href="{% url 'books:detail' book.pk %}" class="btn btn-outline-primary">
+                                        Detay
+                                    </a>
+                                    <a href="{% url 'books:edit' book.pk %}" class="btn btn-outline-secondary">
+                                        Düzenle
+                                    </a>
+                                    <div class="btn-group">
+                                        <button class="btn btn-outline-info dropdown-toggle" type="button" 
+                                                data-toggle="dropdown">
+                                            Durum
+                                        </button>
+                                        <div class="dropdown-menu">
+                                            <a class="dropdown-item status-update" href="#" 
+                                               data-book-id="{{ book.pk }}" data-status="to_read">Okunacak</a>
+                                            <a class="dropdown-item status-update" href="#" 
+                                               data-book-id="{{ book.pk }}" data-status="reading">Okunuyor</a>
+                                            <a class="dropdown-item status-update" href="#" 
+                                               data-book-id="{{ book.pk }}" data-status="read">Okundu</a>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    {% endfor %}
+                    </div>
                 </div>
-                
-                <!-- Pagination -->
-                {% if is_paginated %}
-                    <nav aria-label="Sayfa navigasyonu">
-                        <ul class="pagination justify-content-center">
-                            {% if page_obj.has_previous %}
-                                <li class="page-item">
-                                    <a class="page-link" href="?page={{ page_obj.previous_page_number }}">Önceki</a>
-                                </li>
-                            {% endif %}
-                            
-                            <li class="page-item active">
-                                <span class="page-link">{{ page_obj.number }} / {{ page_obj.paginator.num_pages }}</span>
-                            </li>
-                            
-                            {% if page_obj.has_next %}
-                                <li class="page-item">
-                                    <a class="page-link" href="?page={{ page_obj.next_page_number }}">Sonraki</a>
-                                </li>
-                            {% endif %}
-                        </ul>
-                    </nav>
-                {% endif %}
-            {% else %}
-                <div class="text-center py-5">
-                    <i class="fas fa-book fa-4x text-muted mb-3"></i>
-                    <h3 class="text-muted">Henüz kitap eklenmemiş</h3>
-                    <p class="text-muted">İlk kitabınızı ekleyerek başlayın!</p>
-                    <a href="{% url 'books:add' %}" class="btn btn-primary">Kitap Ekle</a>
-                </div>
-            {% endif %}
+            {% endfor %}
         </div>
-    </div>
-</div>
+    {% else %}
+        <div class="text-center py-5">
+            <i class="fas fa-book fa-4x text-muted mb-3"></i>
+            <h3 class="text-muted">Henüz kitap eklenmemiş</h3>
+            <p class="text-muted">İlk kitabınızı ekleyerek başlayın!</p>
+            <a href="{% url 'books:add' %}" class="btn btn-primary">Kitap Ekle</a>
+        </div>
+    {% endif %}
+
+<!-- CSRF Token for AJAX -->
+<input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
@@ -178,4 +162,4 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 </script>
-{% endblock %}
+{% endblock body %}

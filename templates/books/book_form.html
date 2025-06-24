@@ -4,10 +4,9 @@
 
 {% block title %}
     {% if object %}Kitap Düzenle{% else %}Kitap Ekle{% endif %}
-{% endblock %}
+{% endblock body %}
 
-{% block content %}
-<div class="container mt-4">
+{% block body %}
     <div class="row justify-content-center">
         <div class="col-lg-8">
             <div class="card">
@@ -214,7 +213,6 @@
             </div>
         </div>
     </div>
-</div>
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
