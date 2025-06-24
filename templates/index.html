@@ -1,20 +1,609 @@
 {% extends "layout.html" %}
-
 {% block body %}
 
-<div class="jumbotron text-center">
-        <h3>Kitap Kurduna Hoşgeldiniz</h3>
-        <p>Bu blogta kitaplarınızı paylaşabilirsiniz ve insanlara yardımcı olabilirsiniz.</p>
+<!-- Hero Section -->
+<div class="hero-section">
+    <div class="hero-content text-center">
+        <div class="hero-icon mb-4">
+            <i class="fas fa-book-open fa-5x"></i>
+        </div>
+        <h1 class="hero-title">📚 Kitap Kurdu'na Hoş Geldiniz</h1>
+        <p class="hero-subtitle">
+            Kitap tutkusunu paylaşın, deneyimlerinizi yazın ve okuma dünyasında keşfetmenin keyfini çıkarın
+        </p>
+        
+        {% if request.user.is_authenticated %}
+            <div class="welcome-user">
+                <div class="user-greeting">
+                    <i class="fas fa-user-circle fa-2x text-success me-2"></i>
+                    <span class="user-info">
+                        <strong>Hoş geldiniz, {{ request.user.username }}!</strong>
+                        <small class="d-block text-muted">Bugün hangi kitapları keşfedeceksiniz?</small>
+                    </span>
+                </div>
+            </div>
+            
+            <div class="action-buttons mt-4">
+                <a href="{% url 'books:list' %}" class="btn btn-primary btn-lg me-3">
+                    <i class="fas fa-books me-2"></i>Kitaplarım
+                </a>
+                <a href="{% url 'article:articles' %}" class="btn btn-success btn-lg me-3">
+                    <i class="fas fa-newspaper me-2"></i>Makaleler
+                </a>
+                <a href="{% url 'books:add' %}" class="btn btn-warning btn-lg">
+                    <i class="fas fa-plus me-2"></i>Kitap Ekle
+                </a>
+            </div>
+        {% else %}
+            <div class="guest-cta">
+                <p class="lead mb-4">Kitap dünyasına katılın ve okuma serüveninizi başlatın!</p>
+                <div class="action-buttons">
+                    <a href="{% url 'user:register' %}" class="btn btn-primary btn-lg me-3">
+                        <i class="fas fa-user-plus me-2"></i>Üye Ol
+                    </a>
+                    <a href="{% url 'user:login' %}" class="btn btn-outline-primary btn-lg">
+                        <i class="fas fa-sign-in-alt me-2"></i>Giriş Yap
+                    </a>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+    
+    <!-- Floating Books Animation -->
+    <div class="floating-books">
+        <div class="book book-1">📖</div>
+        <div class="book book-2">📚</div>
+        <div class="book book-3">📗</div>
+        <div class="book book-4">📘</div>
+        <div class="book book-5">📙</div>
+    </div>
 </div>
 
+<!-- Features Section -->
+<div class="features-section mt-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-12 text-center mb-5">
+                <h2 class="section-title">✨ Neler Yapabilirsiniz?</h2>
+                <p class="section-subtitle">Kitap Kurdu ile okuma deneyiminizi geliştirin</p>
+            </div>
+        </div>
+        
+        <div class="row">
+            <!-- Feature 1 -->
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-book-reader fa-3x"></i>
+                    </div>
+                    <h4 class="feature-title">Kitap Takibi</h4>
+                    <p class="feature-description">
+                        Okuduğunuz, okumak istediğiniz ve şu anda okuduğunuz kitapları organize edin.
+                        Google Books API ile kitap bilgilerini otomatik olarak getirin.
+                    </p>
+                    <div class="feature-stats">
+                        <span class="stat-badge">📊 İstatistikler</span>
+                        <span class="stat-badge">⭐ Puanlama</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Feature 2 -->
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-pen-fancy fa-3x"></i>
+                    </div>
+                    <h4 class="feature-title">Makale Yazma</h4>
+                    <p class="feature-description">
+                        Kitap incelemelerinizi, okuma deneyimlerinizi ve önerilerinizi 
+                        zengin editör ile yazın ve paylaşın.
+                    </p>
+                    <div class="feature-stats">
+                        <span class="stat-badge">✍️ Zengin Editör</span>
+                        <span class="stat-badge">📝 İncelemeler</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Feature 3 -->
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-users fa-3x"></i>
+                    </div>
+                    <h4 class="feature-title">Topluluk</h4>
+                    <p class="feature-description">
+                        Diğer kitap severlerin yazılarını okuyun, yorumlar yapın ve 
+                        kitap önerilerini keşfedin.
+                    </p>
+                    <div class="feature-stats">
+                        <span class="stat-badge">💬 Yorumlar</span>
+                        <span class="stat-badge">🤝 Paylaşım</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
-<p>
-        {% if request.user.is_authenticated %}
-                Giriş Yapılmış, {{request.user.username}}
-        {% else %}
-                Giriş Yapılmamış
-        {% endif %}
+<!-- Stats Section -->
+{% if request.user.is_authenticated %}
+<div class="stats-section mt-5">
+    <div class="container">
+        <div class="stats-card">
+            <div class="row text-center">
+                <div class="col-md-3 col-6">
+                    <div class="stat-item">
+                        <div class="stat-number" id="totalBooks">-</div>
+                        <div class="stat-label">Toplam Kitap</div>
+                    </div>
+                </div>
+                <div class="col-md-3 col-6">
+                    <div class="stat-item">
+                        <div class="stat-number" id="readBooks">-</div>
+                        <div class="stat-label">Okunan Kitap</div>
+                    </div>
+                </div>
+                <div class="col-md-3 col-6">
+                    <div class="stat-item">
+                        <div class="stat-number" id="currentBooks">-</div>
+                        <div class="stat-label">Şu An Okunan</div>
+                    </div>
+                </div>
+                <div class="col-md-3 col-6">
+                    <div class="stat-item">
+                        <div class="stat-number" id="totalArticles">-</div>
+                        <div class="stat-label">Yazılan Makale</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
 
-</p>
+<!-- Call to Action -->
+<div class="cta-section mt-5">
+    <div class="container">
+        <div class="cta-card text-center">
+            <h3 class="cta-title">🚀 Okuma Serüveninizi Başlatın!</h3>
+            <p class="cta-description">
+                Bugün ilk kitabınızı ekleyin ve okuma hedeflerinizi takip etmeye başlayın
+            </p>
+            {% if request.user.is_authenticated %}
+                <a href="{% url 'books:add' %}" class="btn btn-primary btn-lg">
+                    <i class="fas fa-plus me-2"></i>İlk Kitabımı Ekle
+                </a>
+            {% else %}
+                <a href="{% url 'user:register' %}" class="btn btn-primary btn-lg">
+                    <i class="fas fa-rocket me-2"></i>Hemen Başla
+                </a>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<!-- Custom Styles -->
+<style>
+    /* Hero Section */
+    .hero-section {
+        background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(72, 187, 120, 0.1));
+        border-radius: 20px;
+        padding: 4rem 2rem;
+        position: relative;
+        overflow: hidden;
+        margin-bottom: 2rem;
+        animation: fadeInUp 0.8s ease;
+    }
+    
+    .hero-content {
+        position: relative;
+        z-index: 2;
+    }
+    
+    .hero-icon i {
+        background: linear-gradient(135deg, var(--primary-color), var(--success-color));
+        background-clip: text;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        filter: drop-shadow(0 4px 8px rgba(102, 126, 234, 0.3));
+        animation: bounceIn 1s ease;
+    }
+    
+    .hero-title {
+        font-size: 3rem;
+        font-weight: 700;
+        color: var(--dark-text);
+        margin-bottom: 1.5rem;
+        background: linear-gradient(135deg, var(--primary-color), var(--success-color));
+        background-clip: text;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+    
+    .hero-subtitle {
+        font-size: 1.25rem;
+        color: var(--muted-text);
+        margin-bottom: 2rem;
+        max-width: 600px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+    
+    .welcome-user {
+        background: rgba(255, 255, 255, 0.9);
+        border-radius: 15px;
+        padding: 1.5rem;
+        margin: 2rem auto;
+        max-width: 400px;
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        animation: slideInUp 0.6s ease 0.3s both;
+    }
+    
+    .user-greeting {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .user-info {
+        text-align: left;
+        margin-left: 1rem;
+    }
+    
+    .guest-cta {
+        animation: fadeInUp 0.6s ease 0.5s both;
+    }
+    
+    /* Floating Books Animation */
+    .floating-books {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        pointer-events: none;
+        z-index: 1;
+    }
+    
+    .book {
+        position: absolute;
+        font-size: 2rem;
+        animation: float 6s ease-in-out infinite;
+        opacity: 0.6;
+    }
+    
+    .book-1 { top: 10%; left: 10%; animation-delay: 0s; }
+    .book-2 { top: 20%; right: 15%; animation-delay: 1s; }
+    .book-3 { bottom: 30%; left: 20%; animation-delay: 2s; }
+    .book-4 { bottom: 20%; right: 25%; animation-delay: 3s; }
+    .book-5 { top: 50%; left: 5%; animation-delay: 4s; }
+    
+    @keyframes float {
+        0%, 100% { transform: translateY(0px) rotate(0deg); }
+        33% { transform: translateY(-20px) rotate(5deg); }
+        66% { transform: translateY(10px) rotate(-3deg); }
+    }
+    
+    /* Features Section */
+    .features-section {
+        animation: fadeInUp 0.8s ease 0.2s both;
+    }
+    
+    .section-title {
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: var(--dark-text);
+        margin-bottom: 1rem;
+    }
+    
+    .section-subtitle {
+        font-size: 1.1rem;
+        color: var(--muted-text);
+        margin-bottom: 2rem;
+    }
+    
+    .feature-card {
+        background: rgba(255, 255, 255, 0.9);
+        border-radius: 20px;
+        padding: 2rem;
+        height: 100%;
+        text-align: center;
+        transition: all 0.3s ease;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        backdrop-filter: blur(10px);
+    }
+    
+    .feature-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+    }
+    
+    .feature-icon {
+        margin-bottom: 1.5rem;
+    }
+    
+    .feature-icon i {
+        background: linear-gradient(135deg, var(--primary-color), var(--success-color));
+        background-clip: text;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        transition: all 0.3s ease;
+    }
+    
+    .feature-card:hover .feature-icon i {
+        transform: scale(1.1);
+    }
+    
+    .feature-title {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: var(--dark-text);
+        margin-bottom: 1rem;
+    }
+    
+    .feature-description {
+        color: var(--muted-text);
+        margin-bottom: 1.5rem;
+        line-height: 1.6;
+    }
+    
+    .feature-stats {
+        display: flex;
+        justify-content: center;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+    }
+    
+    .stat-badge {
+        background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(72, 187, 120, 0.1));
+        color: var(--primary-color);
+        padding: 0.25rem 0.75rem;
+        border-radius: 15px;
+        font-size: 0.875rem;
+        font-weight: 500;
+    }
+    
+    /* Stats Section */
+    .stats-section {
+        animation: fadeInUp 0.8s ease 0.4s both;
+    }
+    
+    .stats-card {
+        background: rgba(255, 255, 255, 0.9);
+        border-radius: 20px;
+        padding: 2rem;
+        backdrop-filter: blur(10px);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    }
+    
+    .stat-item {
+        padding: 1rem;
+    }
+    
+    .stat-number {
+        font-size: 2.5rem;
+        font-weight: 700;
+        background: linear-gradient(135deg, var(--primary-color), var(--success-color));
+        background-clip: text;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        margin-bottom: 0.5rem;
+    }
+    
+    .stat-label {
+        color: var(--muted-text);
+        font-weight: 500;
+        font-size: 0.9rem;
+    }
+    
+    /* CTA Section */
+    .cta-section {
+        animation: fadeInUp 0.8s ease 0.6s both;
+    }
+    
+    .cta-card {
+        background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(72, 187, 120, 0.1));
+        border-radius: 20px;
+        padding: 3rem 2rem;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+    
+    .cta-title {
+        font-size: 2rem;
+        font-weight: 700;
+        color: var(--dark-text);
+        margin-bottom: 1rem;
+    }
+    
+    .cta-description {
+        font-size: 1.1rem;
+        color: var(--muted-text);
+        margin-bottom: 2rem;
+    }
+    
+    /* Button Enhancements */
+    .action-buttons .btn {
+        margin: 0.5rem;
+        padding: 0.75rem 2rem;
+        border-radius: 12px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .action-buttons .btn::before {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 0;
+        height: 0;
+        background: rgba(255, 255, 255, 0.2);
+        border-radius: 50%;
+        transform: translate(-50%, -50%);
+        transition: width 0.4s ease, height 0.4s ease;
+    }
+    
+    .action-buttons .btn:hover::before {
+        width: 300px;
+        height: 300px;
+    }
+    
+    .action-buttons .btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+    }
+    
+    /* Animations */
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    @keyframes slideInUp {
+        from {
+            opacity: 0;
+            transform: translateY(50px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    @keyframes bounceIn {
+        0% {
+            opacity: 0;
+            transform: scale(0.3);
+        }
+        50% {
+            opacity: 1;
+            transform: scale(1.05);
+        }
+        70% {
+            transform: scale(0.9);
+        }
+        100% {
+            opacity: 1;
+            transform: scale(1);
+        }
+    }
+    
+    /* Responsive */
+    @media (max-width: 768px) {
+        .hero-section {
+            padding: 2rem 1rem;
+        }
+        
+        .hero-title {
+            font-size: 2rem;
+        }
+        
+        .hero-subtitle {
+            font-size: 1rem;
+        }
+        
+        .user-greeting {
+            flex-direction: column;
+            text-align: center;
+        }
+        
+        .user-info {
+            margin-left: 0;
+            margin-top: 0.5rem;
+        }
+        
+        .action-buttons .btn {
+            width: 100%;
+            margin: 0.25rem 0;
+        }
+        
+        .feature-card {
+            margin-bottom: 2rem;
+        }
+        
+        .floating-books {
+            display: none;
+        }
+    }
+</style>
+
+<!-- Enhanced JavaScript -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Animate numbers if user is authenticated
+    {% if request.user.is_authenticated %}
+    animateStats();
+    {% endif %}
+    
+    // Staggered animation for feature cards
+    const featureCards = document.querySelectorAll('.feature-card');
+    featureCards.forEach((card, index) => {
+        card.style.animationDelay = (index * 0.1) + 's';
+        card.style.animation = 'fadeInUp 0.6s ease both';
+    });
+    
+    function animateStats() {
+        // Simulated stats - replace with actual data
+        animateNumber('totalBooks', 0, 42, 2000);
+        animateNumber('readBooks', 0, 28, 2000);
+        animateNumber('currentBooks', 0, 3, 2000);
+        animateNumber('totalArticles', 0, 15, 2000);
+    }
+    
+    function animateNumber(elementId, start, end, duration) {
+        const element = document.getElementById(elementId);
+        if (!element) return;
+        
+        const startTime = performance.now();
+        
+        function updateNumber(currentTime) {
+            const elapsed = currentTime - startTime;
+            const progress = Math.min(elapsed / duration, 1);
+            
+            const currentNumber = Math.floor(start + (end - start) * easeOutQuart(progress));
+            element.textContent = currentNumber;
+            
+            if (progress < 1) {
+                requestAnimationFrame(updateNumber);
+            }
+        }
+        
+        requestAnimationFrame(updateNumber);
+    }
+    
+    function easeOutQuart(t) {
+        return 1 - Math.pow(1 - t, 4);
+    }
+    
+    // Intersection Observer for animations
+    const observerOptions = {
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
+    };
+    
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.style.animationPlayState = 'running';
+            }
+        });
+    }, observerOptions);
+    
+    // Observe sections
+    document.querySelectorAll('.features-section, .stats-section, .cta-section').forEach(section => {
+        observer.observe(section);
+    });
+});
+</script>
+
 {% endblock body %}
-
